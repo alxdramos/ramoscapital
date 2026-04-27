@@ -12,26 +12,59 @@
  *
  * 4. Clique em "Salvar" (ícone de disquete ou Ctrl+S)
  *
- * 5. Clique em "Implantar" → "Nova implantação"
- *    - Tipo: "Aplicativo da Web"
- *    - Executar como: "Eu (seu e-mail)"
- *    - Quem tem acesso: "Qualquer pessoa"
- *    - Clique em "Implantar"
+ * 5. ⚠️  REDEPLOY OBRIGATÓRIO após qualquer alteração no código:
+ *    Clique em "Implantar" → "Gerenciar implantações" → ✏️ Editar
+ *    → Versão: "Nova versão" → "Implantar"
+ *    (NÃO crie uma nova implantação — edite a existente para manter a mesma URL)
  *
- * 6. Copie a URL gerada (começa com https://script.google.com/macros/s/...)
+ * Pronto! O CRM sincroniza automaticamente ao abrir a página /crm
+ * ─────────────────────────────────────────────────────────────
  *
- * 7. Abra o arquivo index.html do projeto e localize a linha:
- *       const SHEETS_URL = 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT';
- *    Substitua pelo URL copiado no passo 6.
- *
- * 8. Salve o index.html e rode novamente o git push.
- *
- * Pronto! Cada novo lead aparecerá automaticamente na planilha.
+ * ENDPOINTS:
+ *   POST  → salva novo lead (vem do formulário do site)
+ *   GET   ?action=getLeads → retorna todos os leads para o CRM
  * ─────────────────────────────────────────────────────────────
  */
 
-const SPREADSHEET_ID = ''; // deixe vazio — o script usa a planilha ativa
+// ── GET: CRM lê os leads da planilha ──────────────────────────────────────────
+function doGet(e) {
+  try {
+    const action = (e.parameter && e.parameter.action) || '';
 
+    if (action === 'getLeads') {
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+      const data  = sheet.getDataRange().getValues();
+
+      // Nenhum dado ainda (somente cabeçalho ou vazio)
+      if (data.length <= 1) {
+        return jsonOut({ status: 'ok', leads: [] });
+      }
+
+      // Linha 0 = cabeçalho: [Data/Hora, Nome, WhatsApp, Objetivo, Prazo, Origem, Status]
+      const leads = data.slice(1)
+        .filter(row => row[1] || row[2])   // ignora linhas sem nome e sem WhatsApp
+        .map(row => ({
+          data:      row[0] ? String(row[0]) : '',
+          nome:      row[1] ? String(row[1]).trim() : '',
+          whatsapp:  row[2] ? String(row[2]).trim() : '',
+          objetivo:  row[3] ? String(row[3]).trim() : '',
+          prazo:     row[4] ? String(row[4]).trim() : '',
+          origem:    row[5] ? String(row[5]).trim() : 'site',
+          statusPlanilha: row[6] ? String(row[6]).trim() : 'Novo'
+        }));
+
+      return jsonOut({ status: 'ok', leads: leads });
+    }
+
+    // Ping de verificação
+    return jsonOut({ status: 'ok', message: 'Ramos Capital CRM API — use ?action=getLeads' });
+
+  } catch (err) {
+    return jsonOut({ status: 'error', error: err.message });
+  }
+}
+
+// ── POST: formulário do site grava na planilha ────────────────────────────────
 function doPost(e) {
   try {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -39,7 +72,10 @@ function doPost(e) {
     // Cria cabeçalho na primeira execução
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(['Data/Hora', 'Nome', 'WhatsApp', 'Objetivo', 'Prazo', 'Origem', 'Status']);
-      sheet.getRange(1, 1, 1, 7).setFontWeight('bold').setBackground('#0A1628').setFontColor('#D4AF37');
+      sheet.getRange(1, 1, 1, 7)
+        .setFontWeight('bold')
+        .setBackground('#0A1628')
+        .setFontColor('#D4AF37');
       sheet.setFrozenRows(1);
     }
 
@@ -51,39 +87,50 @@ function doPost(e) {
       data.whatsapp || '',
       data.objetivo || '',
       data.prazo    || '',
-      data.origem   || '',
+      data.origem   || 'site',
       'Novo'
     ]);
 
-    // Formata a última linha inserida
+    // Formata a última linha
     const lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 7).setBackground('#e6f4ea').setFontColor('#1a7a3a');
+    sheet.getRange(lastRow, 7)
+      .setBackground('#e6f4ea')
+      .setFontColor('#1a7a3a');
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'ok', row: lastRow }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ status: 'ok', row: lastRow });
 
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'error', message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ status: 'error', message: err.message });
   }
 }
 
-// Função de teste — execute manualmente para verificar se está funcionando
-function testar() {
-  const mockEvent = {
+// ── HELPER ────────────────────────────────────────────────────────────────────
+function jsonOut(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── TESTE MANUAL (execute no editor do Apps Script para verificar) ─────────────
+function testarGet() {
+  const mockGet = { parameter: { action: 'getLeads' } };
+  const result = doGet(mockGet);
+  Logger.log(result.getContent());
+}
+
+function testarPost() {
+  const mockPost = {
     postData: {
       contents: JSON.stringify({
         data: new Date().toLocaleString('pt-BR'),
-        nome: 'Teste Lead',
-        whatsapp: '(34) 99999-9999',
+        nome: 'Lead de Teste',
+        whatsapp: '(34) 99999-8888',
         objetivo: 'Imóvel',
         prazo: '1-3',
         origem: 'https://ramoscapital.com.br'
       })
     }
   };
-  const result = doPost(mockEvent);
+  const result = doPost(mockPost);
   Logger.log(result.getContent());
 }
