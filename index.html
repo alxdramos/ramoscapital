@@ -355,6 +355,32 @@
 
   /* ─────── SIMULADOR ─────── */
   .sim-section { background: var(--navy-4); }
+  .sim-toggles { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
+  .sim-toggle {
+    display: inline-flex;
+    background: rgba(10,22,40,0.55);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px;
+  }
+  .sim-toggle button {
+    appearance: none; background: transparent; border: 0;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 11.5px; letter-spacing: 0.6px; font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .25s, color .25s;
+  }
+  .sim-toggle button.on { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .sim-toggle button:not(.on):hover { color: var(--bone); }
+  .slider-bounds {
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--muted-2); letter-spacing: 1px;
+  }
   .sim-card {
     background: linear-gradient(180deg, #0a1830 0%, #0a1426 100%);
     border: 1px solid var(--line);
@@ -777,9 +803,9 @@
 <header class="hero">
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
-    <span class="hero-tag"><span class="dot"></span>Uberlândia · MG · 27 anos no mercado</span>
+    <span class="hero-tag"><span class="dot"></span>Capital paciente · Resultado real</span>
     <h1 class="hero-h1">Seu patrimônio merece mais do que <em>juros de banco.</em></h1>
-    <p class="hero-sub">Ajudamos famílias em Uberlândia a comprar imóveis e veículos de forma planejada, sem entrada obrigatória e sem pagar juros.</p>
+    <p class="hero-sub">Ajudamos famílias do Brasil inteiro a comprar imóveis e veículos de forma planejada, sem entrada obrigatória e sem pagar juros.</p>
     <div class="btn-row">
       <a class="btn btn-primary" href="#contato">Quero minha consultoria gratuita <span class="arr">→</span></a>
       <a class="btn btn-ghost" href="#como">Entender como funciona</a>
@@ -896,14 +922,25 @@
     <div class="sim-card fade-in">
       <div class="sim-grid">
         <div class="sim-controls">
+          <div class="sim-toggles">
+            <div class="sim-toggle" id="prodToggle" data-active="imovel">
+              <button type="button" data-val="imovel" class="on">Imóvel</button>
+              <button type="button" data-val="veiculo">Veículo</button>
+            </div>
+            <div class="sim-toggle" id="modeToggle" data-active="credito">
+              <button type="button" data-val="credito" class="on">Por crédito</button>
+              <button type="button" data-val="parcela">Por meia parcela</button>
+            </div>
+          </div>
+
           <div class="field">
             <div class="field-row">
-              <label for="cartaSlider">Valor da carta de crédito</label>
+              <label for="cartaSlider" id="cartaLabel">Valor da carta de crédito</label>
               <span class="val" id="cartaVal">R$ 250.000</span>
             </div>
-            <input type="range" id="cartaSlider" min="100000" max="600000" step="10000" value="250000">
-            <div style="display:flex; justify-content:space-between; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted-2); letter-spacing:1px;">
-              <span>R$ 100k</span><span>R$ 600k</span>
+            <input type="range" id="cartaSlider" min="100000" max="2000000" step="10000" value="250000">
+            <div class="slider-bounds" id="cartaBounds">
+              <span id="cartaMin">R$ 100k</span><span id="cartaMax">R$ 2M</span>
             </div>
           </div>
           <div class="field">
@@ -911,17 +948,21 @@
               <label for="prazoSlider">Prazo em meses</label>
               <span class="val" id="prazoVal">120 meses</span>
             </div>
-            <input type="range" id="prazoSlider" min="60" max="200" step="6" value="120">
-            <div style="display:flex; justify-content:space-between; margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted-2); letter-spacing:1px;">
-              <span>60 meses</span><span>200 meses</span>
+            <input type="range" id="prazoSlider" min="60" max="240" step="6" value="120">
+            <div class="slider-bounds">
+              <span>60 meses</span><span>240 meses</span>
             </div>
           </div>
         </div>
 
         <div class="sim-results">
-          <div class="sim-result-row">
-            <span class="lbl">Parcela mensal estimada</span>
+          <div class="sim-result-row" id="primaryRow">
+            <span class="lbl" id="primaryLbl">Parcela mensal estimada</span>
             <span class="num" id="resParcela">R$ 0</span>
+          </div>
+          <div class="sim-result-row" id="meiaRow">
+            <span class="lbl">Meia parcela mensal</span>
+            <span class="num" id="resMeia">R$ 0</span>
           </div>
           <div class="sim-result-row">
             <span class="lbl">Taxa de administração total (≈15%)</span>
@@ -1310,36 +1351,122 @@
   const prazoSlider = document.getElementById('prazoSlider');
   const cartaVal = document.getElementById('cartaVal');
   const prazoVal = document.getElementById('prazoVal');
+  const cartaLabel = document.getElementById('cartaLabel');
+  const cartaMinEl = document.getElementById('cartaMin');
+  const cartaMaxEl = document.getElementById('cartaMax');
   const resParcela = document.getElementById('resParcela');
   const resTaxa = document.getElementById('resTaxa');
   const resTotal = document.getElementById('resTotal');
   const resEcon = document.getElementById('resEcon');
   const simWhats = document.getElementById('simWhats');
+  const prodToggle = document.getElementById('prodToggle');
+  const modeToggle = document.getElementById('modeToggle');
+
+  // Calibragem: 2M ÷ 240 meses → meia parcela 5166 (imóvel)
+  //             800k ÷ 240 meses → meia parcela 3314.40 (veículo)
+  // baseFactor = (meia_parcela_total_mensal / credito) com prazo de referência 240
+  // parcela_total(prazo) = credito * baseFactor * (REF_PRAZO / prazo)
+  const REF_PRAZO = 240;
+  const PRODUCTS = {
+    imovel:  { credito: [100000, 2000000, 10000], parcela: [341.5, 5166, 1],     baseFactor: 0.005166 },
+    veiculo: { credito: [34000,   800000, 2000],  parcela: [197.2, 3314.4, 0.1], baseFactor: 0.008286 }
+  };
+  const primaryLbl = document.getElementById('primaryLbl');
+  const meiaRow = document.getElementById('meiaRow');
+  const resMeia = document.getElementById('resMeia');
+
+  let prod = 'imovel';
+  let mode = 'credito'; // credito | parcela
 
   function fmtBRL(v) {
+    if (v < 100) return 'R$ ' + v.toFixed(2).replace('.',',');
     return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
   }
+  function fmtCompact(v) {
+    if (v >= 1000000) return 'R$ ' + (v/1000000).toFixed(v % 1000000 === 0 ? 0 : 1).replace('.',',') + 'M';
+    if (v >= 1000) return 'R$ ' + Math.round(v/1000) + 'k';
+    return fmtBRL(v);
+  }
+
+  function applyBounds() {
+    const cfg = PRODUCTS[prod][mode];
+    const [mn, mx, st] = cfg;
+    cartaSlider.min = mn;
+    cartaSlider.max = mx;
+    cartaSlider.step = st;
+    // Smart default: 25% above min, snapped to step
+    const target = mn + (mx - mn) * 0.25;
+    const snapped = Math.round(target / st) * st;
+    cartaSlider.value = Math.min(mx, Math.max(mn, snapped));
+    cartaLabel.textContent = mode === 'credito' ? 'Valor da carta de crédito' : 'Valor da meia parcela';
+    cartaMinEl.textContent = fmtCompact(mn);
+    cartaMaxEl.textContent = fmtCompact(mx);
+  }
+
+  function activateBtn(group, val) {
+    group.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.val === val));
+    group.dataset.active = val;
+  }
+
+  prodToggle.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    prod = b.dataset.val; activateBtn(prodToggle, prod);
+    applyBounds(); updateSim();
+  });
+  modeToggle.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    mode = b.dataset.val; activateBtn(modeToggle, mode);
+    applyBounds(); updateSim();
+  });
 
   function updateSim() {
-    const carta = +cartaSlider.value;
+    const sliderRaw = +cartaSlider.value;
     const prazo = +prazoSlider.value;
-    cartaVal.textContent = fmtBRL(carta);
+    const baseFactor = PRODUCTS[prod].baseFactor; // ref @ 240 meses
+    // Quanto menor o prazo, maior a parcela → escala inversa
+    const factor = baseFactor * (REF_PRAZO / prazo);
+
+    // Derive credit and meia parcela from slider depending on mode
+    let credito, meiaParcela;
+    if (mode === 'credito') {
+      credito = sliderRaw;
+      meiaParcela = (credito * factor) / 2;
+    } else {
+      // sliderRaw = meia parcela → credito = (meia * 2) / factor
+      meiaParcela = sliderRaw;
+      credito = (sliderRaw * 2) / factor;
+    }
+
+    cartaVal.textContent = fmtBRL(sliderRaw);
     prazoVal.textContent = prazo + ' meses';
-    const taxa = carta * 0.15;
-    const total = carta + taxa;
-    const parcela = total / prazo;
-    const totalFin = carta * 2.2;
-    const econ = totalFin - total;
-    resParcela.textContent = fmtBRL(parcela);
+
+    const taxa = credito * 0.15;
+    const total = credito + taxa;
+    const parcela = meiaParcela * 2;
+    const totalFin = credito * 2.2;
+    const econ = Math.max(0, totalFin - total);
+
+    if (mode === 'credito') {
+      primaryLbl.textContent = 'Parcela mensal estimada';
+      resParcela.textContent = fmtBRL(parcela);
+      resMeia.textContent = fmtBRL(meiaParcela);
+      meiaRow.style.display = '';
+    } else {
+      primaryLbl.textContent = 'Crédito estimado';
+      resParcela.textContent = fmtBRL(credito);
+      meiaRow.style.display = 'none';
+    }
     resTaxa.textContent = fmtBRL(taxa);
     resTotal.textContent = fmtBRL(total);
     resEcon.textContent = fmtBRL(econ);
 
-    const msg = `Olá! Simulei uma carta de ${fmtBRL(carta)} em ${prazo} meses (parcela ~${fmtBRL(parcela)}) e quero entender melhor.`;
+    const prodLabel = prod === 'imovel' ? 'imóvel' : 'veículo';
+    const msg = `Olá! Simulei um consórcio de ${prodLabel}: carta de ${fmtBRL(credito)} em ${prazo} meses (meia parcela ~${fmtBRL(meiaParcela)}). Quero entender melhor.`;
     simWhats.href = `https://wa.me/5534998765432?text=${encodeURIComponent(msg)}`;
   }
   cartaSlider.addEventListener('input', updateSim);
   prazoSlider.addEventListener('input', updateSim);
+  applyBounds();
   updateSim();
 
   // ─────────────── FORM ───────────────
