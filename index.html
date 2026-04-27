@@ -1500,7 +1500,7 @@
     submitBtn.classList.add('loading'); submitBtn.disabled = true;
 
     // ── CRM: salva lead no Google Sheets ──
-    const SHEETS_URL = 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT';
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyvhhWGRd1DUJD1wc2gnWdpDazhGlsV7s2VmF6b5xX5f2leHzwJ_6wMm3E_bDpqZ7vrzw/exec';
     const objMap = { imovel: 'Imóvel', veiculo: 'Veículo', investir: 'Investimento', outro: 'Outro' };
     if (SHEETS_URL !== 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT') {
       fetch(SHEETS_URL, {
