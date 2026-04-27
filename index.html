@@ -1462,7 +1462,7 @@
 
     const prodLabel = prod === 'imovel' ? 'imóvel' : 'veículo';
     const msg = `Olá! Simulei um consórcio de ${prodLabel}: carta de ${fmtBRL(credito)} em ${prazo} meses (meia parcela ~${fmtBRL(meiaParcela)}). Quero entender melhor.`;
-    simWhats.href = `https://wa.me/5534998765432?text=${encodeURIComponent(msg)}`;
+    simWhats.href = `https://wa.me/5534987001441?text=${encodeURIComponent(msg)}`;
   }
   cartaSlider.addEventListener('input', updateSim);
   prazoSlider.addEventListener('input', updateSim);
@@ -1499,6 +1499,25 @@
 
     submitBtn.classList.add('loading'); submitBtn.disabled = true;
 
+    // ── CRM: salva lead no Google Sheets ──
+    const SHEETS_URL = 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT';
+    const objMap = { imovel: 'Imóvel', veiculo: 'Veículo', investir: 'Investimento', outro: 'Outro' };
+    if (SHEETS_URL !== 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT') {
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+          nome: nome,
+          whatsapp: fone.value,
+          objetivo: objMap[obj] || obj,
+          prazo: prz,
+          origem: window.location.href
+        })
+      }).catch(() => {});
+    }
+
     setTimeout(() => {
       form.style.display = 'none';
       const success = document.getElementById('formSuccess');
@@ -1507,10 +1526,9 @@
       document.getElementById('successName').textContent = `Perfeito, ${firstName}!`;
       document.getElementById('successMsg').textContent = 'Em breve um consultor entrará em contato. Estamos abrindo o WhatsApp para você…';
 
-      const objMap = { imovel: 'imóvel', veiculo: 'veículo', investir: 'investimento', outro: 'meu objetivo' };
-      const objText = objMap[obj] || 'consultoria';
+      const objText = (objMap[obj] || 'consultoria').toLowerCase();
       const message = `Olá! Me chamo ${nome} e quero uma consultoria gratuita sobre ${objText}.`;
-      const url = `https://wa.me/5534998765432?text=${encodeURIComponent(message)}`;
+      const url = `https://wa.me/5534987001441?text=${encodeURIComponent(message)}`;
       setTimeout(() => { window.open(url, '_blank'); }, 2000);
     }, 900);
   });
