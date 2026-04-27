@@ -16,6 +16,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Inter',system-ui,sans-serif;font-size:14px;color:var(--text);background:var(--bg);overflow:hidden}
+@media(max-width:768px){html,body{overflow:auto;height:auto}}
 a{text-decoration:none;color:inherit}
 
 /* ── LAYOUT ── */
@@ -40,7 +41,7 @@ a{text-decoration:none;color:inherit}
 .sb-role{color:rgba(255,255,255,.32);font-size:10.5px}
 
 /* ── MAIN ── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;position:relative}
 .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;gap:14px;flex-shrink:0}
 .topbar h1{font-size:16px;font-weight:700}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
@@ -209,10 +210,111 @@ tr:hover td{background:#fafbfc}
 .toast.ok{border-left:3px solid #10b981}
 .toast.err{border-left:3px solid #ef4444}
 
+/* ── HAMBURGER ── */
+.hbg{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px;border-radius:6px}
+.hbg span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all .22s}
+.hbg.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hbg.open span:nth-child(2){opacity:0}
+.hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:90}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+
+/* ══════════════ MOBILE RESPONSIVE ══════════════ */
+@media(max-width:768px){
+  /* Layout */
+  .app{flex-direction:column;height:auto;min-height:100vh}
+  .main{flex:1;overflow:visible;min-height:0}
+  .content{padding:12px 10px;overflow:visible}
+
+  /* Sidebar: drawer */
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;z-index:100;
+    transform:translateX(-100%);transition:transform .26s ease;
+    width:268px;
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sb-overlay{display:block;opacity:0;pointer-events:none;transition:opacity .26s}
+  .sb-overlay.open{opacity:1;pointer-events:all}
+
+  /* Topbar */
+  .topbar{padding:0 12px;height:50px;position:sticky;top:0;z-index:80}
+  .topbar h1{font-size:14px}
+  .hbg{display:flex}
+  .topbar-right{gap:6px}
+  .topbar-right .btn-secondary{display:none}/* hide CSV btn on mobile topbar */
+
+  /* KPI grid: 2 cols */
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .kpi{padding:14px 12px}
+  .kpi-val{font-size:22px}
+  .kpi-icon{width:28px;height:28px;font-size:14px;right:10px;top:10px}
+  .kpi-lbl{font-size:10px;margin-bottom:6px}
+
+  /* Charts */
+  .charts-row{grid-template-columns:1fr;gap:12px;margin-bottom:14px}
+  .chart-card{padding:14px 12px}
+  .pl-bar{width:60px}
+
+  /* Kanban: horizontal scroll, natural height */
+  .kanban-wrap{
+    height:auto;min-height:calc(100vh - 90px);
+    flex-direction:column;overflow-x:visible;overflow-y:visible;
+    padding-bottom:80px;
+  }
+  .k-col{flex:none;width:100%;max-height:none}
+
+  /* Table */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:600px}
+  .list-filters{flex-direction:column;gap:8px}
+  .search-box{min-width:unset;width:100%}
+  .fsel{width:100%}
+
+  /* Recent leads table in dashboard */
+  .chart-card table{min-width:480px}
+  .chart-card .tbl-wrap{overflow-x:auto}
+
+  /* Modal: bottom sheet */
+  .overlay{padding:0;align-items:flex-end}
+  .modal{border-radius:16px 16px 0 0;max-width:100%;max-height:88vh}
+  .modal-hd{padding:14px 16px 12px}
+  .modal-body{padding:14px 16px}
+  .modal-ft{padding:12px 16px}
+
+  /* Form rows: stack */
+  .f-row{grid-template-columns:1fr;gap:10px}
+  .f-row.full{grid-template-columns:1fr}
+
+  /* Detail grid */
+  .d-grid{grid-template-columns:1fr 1fr;gap:10px}
+
+  /* Status pills wrap */
+  .status-pills{gap:4px}
+  .s-pill{font-size:10.5px;padding:4px 9px}
+
+  /* Detail tabs */
+  .d-tabs{overflow-x:auto;margin:-4px -16px 14px;padding:0 16px}
+  .d-tab{white-space:nowrap;padding:8px 12px}
+
+  /* Lead card actions */
+  .lc-actions{flex-wrap:wrap}
+
+  /* Nav badges */
+  .nav-badge{font-size:9px;padding:1px 5px}
+}
+
+@media(max-width:420px){
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi-val{font-size:19px}
+  .topbar h1{font-size:13px}
+  .d-grid{grid-template-columns:1fr}
+  .kpi-lbl{font-size:9.5px}
+  .btn{font-size:12px;padding:7px 11px}
+}
 </style>
 </head>
 <body>
@@ -275,9 +377,12 @@ tr:hover td{background:#fafbfc}
 <!-- ── MAIN ── -->
 <div class="main">
   <div class="topbar">
+    <button class="hbg" id="hbg" onclick="toggleSidebar()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
     <h1 id="view-title">Dashboard</h1>
     <div class="topbar-right">
-      <button class="btn btn-secondary btn-sm" onclick="exportCSV()">↓ Exportar CSV</button>
+      <button class="btn btn-secondary btn-sm" onclick="exportCSV()">↓ CSV</button>
       <button class="btn btn-primary" onclick="openAddModal()">+ Novo Lead</button>
     </div>
   </div>
@@ -377,6 +482,7 @@ tr:hover td{background:#fafbfc}
   </div>
 </div>
 
+<div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 <div class="toast-wrap" id="toasts"></div>
 
 <script>
@@ -958,6 +1064,23 @@ function seed(){
   ];
   save();
 }
+
+// ── SIDEBAR TOGGLE (mobile) ───────────────────────────────────────────────────
+function toggleSidebar(){
+  const sb=document.querySelector('.sidebar');
+  const ov=document.getElementById('sb-overlay');
+  const hb=document.getElementById('hbg');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+  hb.classList.toggle('open');
+}
+function closeSidebar(){
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('open');
+  document.getElementById('hbg').classList.remove('open');
+}
+// close sidebar when a nav item is clicked on mobile
+document.querySelectorAll('.nav-item').forEach(el=>el.addEventListener('click',()=>{if(window.innerWidth<=768)closeSidebar()}));
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 leads=load(); seed(); render();
