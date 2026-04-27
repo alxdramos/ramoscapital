@@ -1,0 +1,1321 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ramos Capital — Brand System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A1628;
+    --navy-2: #0F2044;
+    --gold: #C9A84C;
+    --gold-2: #D4AF37;
+    --bone: #F5F3EE;
+    --bone-2: #FAF8F4;
+    --graphite: #1C1C1E;
+    --graphite-2: #2C2C2E;
+    --moss: #2D6A4F;
+    --moss-2: #40916C;
+    --line: rgba(245,243,238,0.10);
+    --line-strong: rgba(245,243,238,0.22);
+    --muted: rgba(245,243,238,0.62);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--bone);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    min-height: 100vh;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 18px 36px;
+    display: flex; align-items: center; gap: 28px;
+  }
+  .brand-mark { display: flex; align-items: center; gap: 12px; }
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 22px; letter-spacing: 0.5px;
+  }
+  .brand-name .cap {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500; font-size: 11px;
+    letter-spacing: 4px; margin-left: 10px; color: var(--gold);
+    text-transform: uppercase;
+  }
+  .meta-tag {
+    margin-left: auto;
+    font-size: 11px; letter-spacing: 2.4px; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 36px;
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+  .tab {
+    appearance: none; background: none; border: 0;
+    color: var(--muted); cursor: pointer;
+    font-family: inherit; font-size: 12px;
+    letter-spacing: 2.6px; text-transform: uppercase;
+    padding: 22px 4px; margin-right: 36px;
+    border-bottom: 1px solid transparent;
+    transition: color .2s, border-color .2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--bone); }
+  .tab.active { color: var(--bone); border-bottom-color: var(--gold); }
+  .tab .num {
+    color: var(--gold); margin-right: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+
+  /* ── Layout ── */
+  main {
+    max-width: 1280px; margin: 0 auto;
+    padding: 56px 36px 120px;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade .35s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none; } }
+
+  .section-head { margin-bottom: 40px; max-width: 760px; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 52px; line-height: 1.05;
+    margin: 0 0 14px;
+    letter-spacing: -0.5px;
+  }
+  .section-lede {
+    color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 620px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bone);
+    color: var(--graphite);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .card.dark {
+    background: var(--graphite);
+    color: var(--bone);
+  }
+  .card-grid {
+    display: grid; gap: 24px;
+  }
+
+  /* ── Color tab ── */
+  .color-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+  }
+  .color-card {
+    grid-column: span 6;
+    background: var(--bone);
+    color: var(--graphite);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 980px) { .color-card { grid-column: span 12; } }
+  .swatch {
+    height: 180px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 22px 26px;
+    position: relative;
+  }
+  .swatch .swatch-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 30px;
+    color: inherit;
+  }
+  .swatch .swatch-token {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    opacity: 0.75;
+  }
+  .swatch .corner {
+    position: absolute; top: 22px; right: 26px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+  }
+
+  .color-body { padding: 26px; }
+  .color-row {
+    display: grid; grid-template-columns: 80px 1fr auto; gap: 14px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(28,28,30,0.10);
+    font-size: 12.5px;
+  }
+  .color-row:last-child { border-bottom: 0; }
+  .color-row .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(28,28,30,0.55);
+  }
+  .color-row .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; color: var(--graphite);
+  }
+  .copy-btn {
+    appearance: none; background: var(--graphite); color: var(--bone);
+    border: 0; border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 6px 10px; cursor: pointer;
+    transition: background .2s;
+  }
+  .copy-btn:hover { background: var(--navy); }
+  .copy-btn.copied { background: var(--moss); }
+
+  .color-usage {
+    margin-top: 18px; padding-top: 18px;
+    border-top: 1px solid rgba(28,28,30,0.10);
+    font-size: 13px; line-height: 1.55;
+    color: rgba(28,28,30,0.78);
+  }
+  .color-usage h5 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; margin: 0 0 8px;
+    color: var(--graphite);
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.5px;
+    padding: 4px 9px; border-radius: 999px;
+    border: 1px solid rgba(28,28,30,0.18);
+    color: rgba(28,28,30,0.7);
+  }
+  .pill.bad { color: #8b2a2a; border-color: #8b2a2a40; }
+  .pill.good { color: var(--moss); border-color: #2D6A4F40; }
+
+  /* ── Typography tab ── */
+  .type-card {
+    background: var(--bone); color: var(--graphite);
+    border-radius: 4px; padding: 36px;
+  }
+  .type-grid {
+    display: grid; grid-template-columns: 1fr; gap: 18px;
+  }
+  .type-row {
+    display: grid; grid-template-columns: 220px 1fr;
+    gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(28,28,30,0.08);
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-meta { color: rgba(28,28,30,0.55); }
+  .type-meta .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--gold-2);
+    margin-bottom: 6px;
+  }
+  .type-meta .name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 14px; color: var(--graphite);
+    margin-bottom: 4px;
+  }
+  .type-meta .spec {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.6;
+  }
+  .sample { color: var(--graphite); }
+  .sample.h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 56px; line-height: 1.05; letter-spacing: -0.5px;}
+  .sample.h2 { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 36px; line-height: 1.15;}
+  .sample.h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 24px; line-height: 1.25;}
+  .sample.body { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; font-size: 16px; line-height: 1.6; max-width: 540px;}
+  .sample.caption { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; font-size: 13px; color: rgba(28,28,30,0.55); line-height: 1.55;}
+  .sample.fin { font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 32px; letter-spacing: -0.5px;}
+
+  .font-overview {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 28px;
+  }
+  @media (max-width: 880px) { .font-overview { grid-template-columns: 1fr; } }
+  .font-card {
+    background: var(--graphite); color: var(--bone);
+    border-radius: 4px; padding: 22px;
+    border: 1px solid var(--line);
+  }
+  .font-card .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .font-card .specimen {
+    font-size: 64px; line-height: 1; margin: 22px 0 12px;
+  }
+  .font-card .fname {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500; font-size: 14px;
+  }
+  .font-card .weights {
+    color: var(--muted); font-size: 11px;
+    font-family: 'JetBrains Mono', monospace; margin-top: 4px;
+  }
+  .font-card.cormorant .specimen { font-family: 'Cormorant Garamond', serif; font-weight: 300; }
+  .font-card.jakarta .specimen { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; }
+  .font-card.mono .specimen { font-family: 'JetBrains Mono', monospace; font-weight: 400; }
+
+  /* ── Logo tab ── */
+  .logo-block { margin-bottom: 56px; }
+  .logo-block-head {
+    display: flex; align-items: baseline; gap: 18px; margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+  .logo-block-head .ver {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; color: var(--gold);
+  }
+  .logo-block-head h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 28px; margin: 0;
+  }
+  .logo-block-head .desc {
+    color: var(--muted); font-size: 13px; margin-left: auto;
+    max-width: 420px; text-align: right;
+  }
+  .logo-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  @media (max-width: 880px) { .logo-row { grid-template-columns: 1fr; } }
+  .logo-tile {
+    aspect-ratio: 4/3;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-tile.bone { background: var(--bone); }
+  .logo-tile.navy { background: var(--navy-2); border: 1px solid var(--line); }
+  .logo-tile.gold { background: var(--gold); }
+  .tile-tag {
+    position: absolute; top: 14px; left: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .logo-tile.bone .tile-tag { color: var(--graphite); }
+  .logo-tile.navy .tile-tag { color: var(--bone); }
+  .logo-tile.gold .tile-tag { color: var(--navy); }
+
+  /* ── Applications tab ── */
+  .app-block { margin-bottom: 64px; }
+  .app-head {
+    display: flex; align-items: baseline; gap: 18px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--line); padding-bottom: 14px;
+  }
+  .app-head .ver {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 2px; color: var(--gold);
+  }
+  .app-head h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 28px; margin: 0;
+  }
+  .app-head .desc { color: var(--muted); font-size: 13px; margin-left: auto; }
+
+  /* Business card */
+  .biz-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 880px) { .biz-row { grid-template-columns: 1fr; } }
+  .biz-card {
+    aspect-ratio: 85/55;
+    border-radius: 4px;
+    padding: 32px;
+    display: flex; flex-direction: column;
+    position: relative;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.5);
+  }
+  .biz-card.front {
+    background: var(--bone); color: var(--graphite);
+  }
+  .biz-card.back {
+    background: var(--navy-2); color: var(--bone);
+    align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .biz-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400; font-size: 26px;
+    margin-top: auto;
+    letter-spacing: -0.2px;
+  }
+  .biz-role {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(28,28,30,0.55);
+    margin-top: 4px;
+  }
+  .biz-divider {
+    width: 32px; height: 1px; background: var(--gold);
+    margin: 16px 0;
+  }
+  .biz-contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; line-height: 1.7;
+    color: rgba(28,28,30,0.7);
+  }
+  .biz-back-slogan {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-style: italic;
+    font-size: 22px; line-height: 1.3;
+    color: var(--bone);
+    max-width: 340px;
+    margin-top: 28px;
+  }
+  .biz-back-tag {
+    margin-top: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2.5px; color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* Letterhead */
+  .letterhead {
+    background: var(--bone); color: var(--graphite);
+    aspect-ratio: 210/297;
+    max-width: 720px; margin: 0 auto;
+    padding: 56px 64px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 40px 80px -40px rgba(0,0,0,0.6);
+  }
+  .lh-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--gold);
+  }
+  .lh-contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; line-height: 1.7;
+    color: rgba(28,28,30,0.65); text-align: right;
+  }
+  .lh-body { flex: 1; padding-top: 36px; font-size: 13px; line-height: 1.7; color: rgba(28,28,30,0.78); }
+  .lh-body h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400; font-size: 24px; margin: 0 0 18px;
+    color: var(--graphite);
+  }
+  .lh-footer {
+    border-top: 1px solid var(--gold);
+    padding-top: 16px;
+    display: flex; justify-content: space-between; gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    color: rgba(28,28,30,0.55);
+  }
+
+  /* Instagram */
+  .ig-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 880px; margin: 0 auto; }
+  @media (max-width: 880px) { .ig-wrap { grid-template-columns: 1fr; } }
+  .ig-post {
+    aspect-ratio: 1/1;
+    background: var(--navy-2);
+    border-radius: 4px;
+    padding: 36px;
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .ig-post.alt { background: var(--bone); color: var(--graphite); }
+  .ig-post::before {
+    content: ""; position: absolute; inset: 24px;
+    border: 1px solid rgba(201,168,76,0.35);
+    pointer-events: none;
+  }
+  .ig-post.alt::before { border-color: rgba(10,22,40,0.15); }
+  .ig-top { display: flex; align-items: center; justify-content: space-between; }
+  .ig-content {
+    flex: 1; display: flex; align-items: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 36px; line-height: 1.1;
+    letter-spacing: -0.3px;
+  }
+  .ig-content em { color: var(--gold); font-style: italic; font-weight: 400; }
+  .ig-post.alt .ig-content em { color: var(--navy); }
+  .ig-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+  .ig-post.alt .ig-bottom { color: rgba(28,28,30,0.55); }
+
+  /* Email signature */
+  .email-frame {
+    background: var(--bone); color: var(--graphite);
+    border-radius: 4px;
+    max-width: 640px;
+    padding: 28px 32px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .esig {
+    display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center;
+    padding: 18px 0;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+  }
+  .esig-mark {
+    width: 64px; height: 64px;
+    background: var(--navy);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .esig-info .nm { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 22px; letter-spacing: -0.2px; }
+  .esig-info .rl { font-size: 10px; letter-spacing: 2.4px; text-transform: uppercase; color: var(--gold-2); margin-top: 2px;}
+  .esig-info .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.65;
+    color: rgba(28,28,30,0.7); margin-top: 10px;
+  }
+  .email-pre {
+    font-size: 12px; color: rgba(28,28,30,0.55);
+    margin-bottom: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* Voice tab */
+  .voice-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px;
+  }
+  .voice-card {
+    background: var(--bone); color: var(--graphite);
+    border-radius: 4px; padding: 32px;
+  }
+  .voice-card.dark { background: var(--graphite); color: var(--bone); }
+  .voice-card.navy { background: var(--navy-2); color: var(--bone); border: 1px solid var(--line); }
+  .v-head {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .voice-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-size: 32px;
+    margin: 0 0 18px;
+    line-height: 1.1;
+  }
+  .slogan-list { list-style: none; padding: 0; margin: 0; }
+  .slogan-list li {
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(28,28,30,0.12);
+    display: flex; align-items: baseline; gap: 14px;
+  }
+  .voice-card.dark .slogan-list li,
+  .voice-card.navy .slogan-list li { border-bottom-color: var(--line); }
+  .slogan-list li:last-child { border-bottom: 0; }
+  .slogan-list .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--gold); letter-spacing: 1px;
+    min-width: 22px;
+  }
+  .slogan-list .text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400; font-size: 22px; line-height: 1.25;
+  }
+  .tag-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300; font-style: italic;
+    font-size: 32px; line-height: 1.25;
+  }
+  .tag-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); margin-top: 16px;
+  }
+  .ad-card {
+    padding: 22px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ad-card:last-child { border-bottom: 0; }
+  .ad-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--gold);
+    letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  .ad-card .headline {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 18px; line-height: 1.3;
+  }
+  .ad-card .body {
+    font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5;
+  }
+  .word-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+  }
+  .word-col h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+  }
+  .word-col.uses h5 { color: var(--moss-2); }
+  .word-col.avoids h5 { color: #d97a7a; }
+  .word-col ul { list-style: none; margin: 0; padding: 0; }
+  .word-col li {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400; font-size: 22px; padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .word-col.avoids li { text-decoration: line-through; text-decoration-color: rgba(217,122,122,0.5);}
+
+  /* helpers */
+  .span-12 { grid-column: span 12; }
+  .span-8 { grid-column: span 8; }
+  .span-7 { grid-column: span 7; }
+  .span-6 { grid-column: span 6; }
+  .span-5 { grid-column: span 5; }
+  .span-4 { grid-column: span 4; }
+  @media (max-width: 980px) {
+    .span-8, .span-7, .span-6, .span-5, .span-4 { grid-column: span 12; }
+  }
+
+  .toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--graphite); color: var(--bone);
+    padding: 12px 18px; border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    border: 1px solid var(--gold);
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* footer note */
+  .foot {
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 36px 60px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    display: flex; justify-content: space-between; gap: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 28px; margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─────────── TOPBAR ─────────── -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mark">
+      <!-- mini mark -->
+      <svg width="28" height="28" viewBox="0 0 40 40" aria-hidden="true">
+        <g fill="none" stroke="#C9A84C" stroke-width="2.4" stroke-linecap="square">
+          <path d="M8 30 L20 14 L32 30" />
+          <path d="M14 30 L20 22 L26 30" />
+        </g>
+      </svg>
+      <div class="brand-name">Ramos<span class="cap">Capital</span></div>
+    </div>
+    <div class="meta-tag">Brand System · v1.0 · 2026</div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="cores" role="tab"><span class="num">01</span>Cores</button>
+    <button class="tab" data-tab="tipo" role="tab"><span class="num">02</span>Tipografia</button>
+    <button class="tab" data-tab="logo" role="tab"><span class="num">03</span>Logo</button>
+    <button class="tab" data-tab="apps" role="tab"><span class="num">04</span>Aplicações</button>
+    <button class="tab" data-tab="voz" role="tab"><span class="num">05</span>Tom de Voz</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ─────────── CORES ─────────── -->
+<section class="panel active" id="cores" role="tabpanel">
+  <div class="section-head">
+    <div class="eyebrow">Entregável 01 · Sistema de Cores</div>
+    <h1 class="section-title">Autoridade em azul-marinho.<br/>Sofisticação em ouro.</h1>
+    <p class="section-lede">A paleta privilegia repouso visual e legibilidade em materiais densos. O dourado é cirúrgico — usado em fios, pontuações e ativos premium, nunca como fundo dominante.</p>
+  </div>
+
+  <div class="color-grid" id="colorGrid">
+    <!-- cards injected by JS -->
+  </div>
+</section>
+
+<!-- ─────────── TIPOGRAFIA ─────────── -->
+<section class="panel" id="tipo" role="tabpanel">
+  <div class="section-head">
+    <div class="eyebrow">Entregável 02 · Tipografia</div>
+    <h1 class="section-title">Três vozes tipográficas.<br/>Uma só hierarquia.</h1>
+    <p class="section-lede">Cormorant carrega o tom institucional; Plus Jakarta Sans sustenta a leitura; JetBrains Mono dá precisão aos números — onde, em finanças, repousa toda a confiança.</p>
+  </div>
+
+  <div class="font-overview">
+    <div class="font-card cormorant">
+      <div class="role">Display</div>
+      <div class="specimen">Aa</div>
+      <div class="fname">Cormorant Garamond</div>
+      <div class="weights">300 · 400 · 600</div>
+    </div>
+    <div class="font-card jakarta">
+      <div class="role">Corpo · UI</div>
+      <div class="specimen">Aa</div>
+      <div class="fname">Plus Jakarta Sans</div>
+      <div class="weights">400 · 500 · 600</div>
+    </div>
+    <div class="font-card mono">
+      <div class="role">Dados Financeiros</div>
+      <div class="specimen">R$</div>
+      <div class="fname">JetBrains Mono</div>
+      <div class="weights">400</div>
+    </div>
+  </div>
+
+  <div class="type-card">
+    <div class="type-grid">
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">H1 · Hero</div>
+          <div class="name">Cormorant Garamond</div>
+          <div class="spec">300 · 56/60 · -0.5</div>
+        </div>
+        <div class="sample h1">Construindo patrimônio real</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">H2 · Section</div>
+          <div class="name">Cormorant Garamond</div>
+          <div class="spec">400 · 36/42</div>
+        </div>
+        <div class="sample h2">Por que a Ramos Capital?</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">H3 · Subhead</div>
+          <div class="name">Plus Jakarta Sans</div>
+          <div class="spec">600 · 24/30</div>
+        </div>
+        <div class="sample h3">Consórcio imobiliário</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">Body</div>
+          <div class="name">Plus Jakarta Sans</div>
+          <div class="spec">400 · 16/26</div>
+        </div>
+        <div class="sample body">Acreditamos que paciência é capital. Estruturamos cartas para famílias que enxergam dez, quinze, vinte anos à frente — onde juros bancários deixam de ser destino e passam a ser opção.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">Caption</div>
+          <div class="name">Plus Jakarta Sans</div>
+          <div class="spec">400 · 13/20</div>
+        </div>
+        <div class="sample caption">Consórcio é uma modalidade de aquisição programada regulamentada pelo Banco Central do Brasil. Resultados passados não garantem resultados futuros. Leia o regulamento.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <div class="label">Financeiro</div>
+          <div class="name">JetBrains Mono</div>
+          <div class="spec">400 · 32/36</div>
+        </div>
+        <div class="sample fin">R$ 1.200.000<span style="color:var(--gold-2); margin-left: 14px;">↗ +18,4%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── LOGO ─────────── -->
+<section class="panel" id="logo" role="tabpanel">
+  <div class="section-head">
+    <div class="eyebrow">Entregável 03 · Logotipo · 3 versões</div>
+    <h1 class="section-title">Duas linhas que sobem.<br/>Uma trajetória que dura.</h1>
+    <p class="section-lede">O símbolo é uma seta dupla ascendente — o exterior representa a meta, o interior a disciplina cotidiana. A palavra <em>Consórcio</em> nunca acompanha o logo: este é, acima de tudo, um selo patrimonial.</p>
+  </div>
+
+  <!-- Version A: Horizontal -->
+  <div class="logo-block">
+    <div class="logo-block-head">
+      <div class="ver">Versão A</div>
+      <h3>Horizontal Completa</h3>
+      <div class="desc">Aplicação primária. Use em headers, papéis timbrados, apresentações e materiais oficiais.</div>
+    </div>
+    <div class="logo-row">
+      <div class="logo-tile bone">
+        <span class="tile-tag">Bone · #F5F3EE</span>
+        <svg width="320" height="80" viewBox="0 0 320 80" aria-label="Ramos Capital">
+          <g fill="none" stroke="#0A1628" stroke-width="2.4" stroke-linecap="square">
+            <path d="M14 56 L34 24 L54 56" />
+            <path d="M24 56 L34 40 L44 56" />
+          </g>
+          <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#0A1628" letter-spacing="1">RAMOS</text>
+          <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+          <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="logo-tile navy">
+        <span class="tile-tag">Navy · #0F2044</span>
+        <svg width="320" height="80" viewBox="0 0 320 80" aria-label="Ramos Capital">
+          <g fill="none" stroke="#F5F3EE" stroke-width="2.4" stroke-linecap="square">
+            <path d="M14 56 L34 24 L54 56" />
+            <path d="M24 56 L34 40 L44 56" />
+          </g>
+          <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#F5F3EE" letter-spacing="1">RAMOS</text>
+          <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+          <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="logo-tile gold">
+        <span class="tile-tag">Gold · #C9A84C</span>
+        <svg width="320" height="80" viewBox="0 0 320 80" aria-label="Ramos Capital">
+          <g fill="none" stroke="#0A1628" stroke-width="2.4" stroke-linecap="square">
+            <path d="M14 56 L34 24 L54 56" />
+            <path d="M24 56 L34 40 L44 56" />
+          </g>
+          <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#0A1628" letter-spacing="1">RAMOS</text>
+          <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#0A1628" letter-spacing="4">CAPITAL</text>
+          <line x1="176" y1="32" x2="176" y2="50" stroke="#0A1628" stroke-width="1"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version B: Stacked -->
+  <div class="logo-block">
+    <div class="logo-block-head">
+      <div class="ver">Versão B</div>
+      <h3>Empilhada · Quadrado</h3>
+      <div class="desc">Para feeds sociais, selos, capas e qualquer container quadrado.</div>
+    </div>
+    <div class="logo-row">
+      <div class="logo-tile bone">
+        <span class="tile-tag">Bone · #F5F3EE</span>
+        <svg width="200" height="200" viewBox="0 0 200 200" aria-label="Ramos Capital">
+          <g fill="none" stroke="#0A1628" stroke-width="2.6" stroke-linecap="square" transform="translate(70 50)">
+            <path d="M0 56 L30 8 L60 56" />
+            <path d="M15 56 L30 32 L45 56" />
+          </g>
+          <line x1="60" y1="130" x2="140" y2="130" stroke="#C9A84C" stroke-width="0.8"/>
+          <text x="100" y="156" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="300" font-size="30" fill="#0A1628" letter-spacing="2">RAMOS</text>
+          <text x="100" y="178" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="11" fill="#C9A84C" letter-spacing="6">CAPITAL</text>
+        </svg>
+      </div>
+      <div class="logo-tile navy">
+        <span class="tile-tag">Navy · #0F2044</span>
+        <svg width="200" height="200" viewBox="0 0 200 200" aria-label="Ramos Capital">
+          <g fill="none" stroke="#F5F3EE" stroke-width="2.6" stroke-linecap="square" transform="translate(70 50)">
+            <path d="M0 56 L30 8 L60 56" />
+            <path d="M15 56 L30 32 L45 56" />
+          </g>
+          <line x1="60" y1="130" x2="140" y2="130" stroke="#C9A84C" stroke-width="0.8"/>
+          <text x="100" y="156" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="300" font-size="30" fill="#F5F3EE" letter-spacing="2">RAMOS</text>
+          <text x="100" y="178" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="11" fill="#C9A84C" letter-spacing="6">CAPITAL</text>
+        </svg>
+      </div>
+      <div class="logo-tile gold">
+        <span class="tile-tag">Gold · #C9A84C</span>
+        <svg width="200" height="200" viewBox="0 0 200 200" aria-label="Ramos Capital">
+          <g fill="none" stroke="#0A1628" stroke-width="2.6" stroke-linecap="square" transform="translate(70 50)">
+            <path d="M0 56 L30 8 L60 56" />
+            <path d="M15 56 L30 32 L45 56" />
+          </g>
+          <line x1="60" y1="130" x2="140" y2="130" stroke="#0A1628" stroke-width="0.8"/>
+          <text x="100" y="156" text-anchor="middle" font-family="Cormorant Garamond, serif" font-weight="300" font-size="30" fill="#0A1628" letter-spacing="2">RAMOS</text>
+          <text x="100" y="178" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="11" fill="#0A1628" letter-spacing="6">CAPITAL</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version C: Mark only -->
+  <div class="logo-block">
+    <div class="logo-block-head">
+      <div class="ver">Versão C</div>
+      <h3>Símbolo Isolado · Favicon</h3>
+      <div class="desc">Aplicação reduzida — favicons, ícones de app, bordados e selos com pouca área.</div>
+    </div>
+    <div class="logo-row">
+      <div class="logo-tile bone">
+        <span class="tile-tag">Bone · #F5F3EE</span>
+        <svg width="120" height="120" viewBox="0 0 120 120" aria-label="Ramos Capital mark">
+          <g fill="none" stroke="#0A1628" stroke-width="4" stroke-linecap="square" transform="translate(30 28)">
+            <path d="M0 64 L30 8 L60 64" />
+            <path d="M15 64 L30 36 L45 64" />
+          </g>
+        </svg>
+      </div>
+      <div class="logo-tile navy">
+        <span class="tile-tag">Navy · #0F2044</span>
+        <svg width="120" height="120" viewBox="0 0 120 120" aria-label="Ramos Capital mark">
+          <g fill="none" stroke="#C9A84C" stroke-width="4" stroke-linecap="square" transform="translate(30 28)">
+            <path d="M0 64 L30 8 L60 64" />
+            <path d="M15 64 L30 36 L45 64" />
+          </g>
+        </svg>
+      </div>
+      <div class="logo-tile gold">
+        <span class="tile-tag">Gold · #C9A84C</span>
+        <svg width="120" height="120" viewBox="0 0 120 120" aria-label="Ramos Capital mark">
+          <g fill="none" stroke="#0A1628" stroke-width="4" stroke-linecap="square" transform="translate(30 28)">
+            <path d="M0 64 L30 8 L60 64" />
+            <path d="M15 64 L30 36 L45 64" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── APLICAÇÕES ─────────── -->
+<section class="panel" id="apps" role="tabpanel">
+  <div class="section-head">
+    <div class="eyebrow">Entregável 04 · Aplicações da Marca</div>
+    <h1 class="section-title">A marca em movimento.</h1>
+    <p class="section-lede">Quatro touchpoints que cobrem a jornada de um consultor: do cumprimento físico ao primeiro e-mail, do post no feed ao contrato impresso.</p>
+  </div>
+
+  <!-- Business Card -->
+  <div class="app-block">
+    <div class="app-head">
+      <div class="ver">A</div>
+      <h3>Cartão de Visita</h3>
+      <div class="desc">85 × 55 mm · papel texturizado off-white · hot stamping dourado nos fios</div>
+    </div>
+    <div class="biz-row">
+      <div class="biz-card front">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <svg width="160" height="40" viewBox="0 0 320 80">
+            <g fill="none" stroke="#0A1628" stroke-width="2.4" stroke-linecap="square">
+              <path d="M14 56 L34 24 L54 56" />
+              <path d="M24 56 L34 40 L44 56" />
+            </g>
+            <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#0A1628" letter-spacing="1">RAMOS</text>
+            <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+            <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="biz-name">Alexandre Ramos</div>
+        <div class="biz-role">Consultor de Patrimônio</div>
+        <div class="biz-divider"></div>
+        <div class="biz-contact">
+          +55 34 9 9876 5432<br/>
+          alexandre@ramoscapital.com.br<br/>
+          Av. Rondon Pacheco, 4900 · Uberlândia · MG
+        </div>
+      </div>
+      <div class="biz-card back">
+        <svg width="84" height="84" viewBox="0 0 120 120" aria-label="Mark">
+          <g fill="none" stroke="#C9A84C" stroke-width="3.2" stroke-linecap="square" transform="translate(30 28)">
+            <path d="M0 64 L30 8 L60 64" />
+            <path d="M15 64 L30 36 L45 64" />
+          </g>
+        </svg>
+        <div class="biz-back-slogan">"Patrimônio é o que sobra do tempo bem investido."</div>
+        <div class="biz-back-tag">Ramos Capital · Uberlândia</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Letterhead -->
+  <div class="app-block">
+    <div class="app-head">
+      <div class="ver">B</div>
+      <h3>Papel Timbrado A4</h3>
+      <div class="desc">210 × 297 mm · margens 20 mm · header e footer com fios dourados</div>
+    </div>
+    <div class="letterhead">
+      <div class="lh-header">
+        <svg width="220" height="56" viewBox="0 0 320 80">
+          <g fill="none" stroke="#0A1628" stroke-width="2.4" stroke-linecap="square">
+            <path d="M14 56 L34 24 L54 56" />
+            <path d="M24 56 L34 40 L44 56" />
+          </g>
+          <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#0A1628" letter-spacing="1">RAMOS</text>
+          <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+          <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+        </svg>
+        <div class="lh-contact">
+          contato@ramoscapital.com.br<br/>
+          +55 34 3210 4500<br/>
+          ramoscapital.com.br
+        </div>
+      </div>
+      <div class="lh-body">
+        <h4>Ao senhor cliente,</h4>
+        <p>Encaminhamos em anexo a proposta personalizada de estruturação patrimonial, contemplando carta de crédito imobiliária no valor de R$ 1.200.000,00, com prazo total de 240 meses e parcela inicial de R$ 4.860,00.</p>
+        <p>Permanecemos à disposição para uma reunião de alinhamento na próxima semana.</p>
+        <p style="margin-top: 32px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px;">Cordialmente,<br/>Alexandre Ramos</p>
+      </div>
+      <div class="lh-footer">
+        <span>Av. Rondon Pacheco, 4900 · Tibery · Uberlândia · MG</span>
+        <span>CNPJ 47.382.910/0001-44</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instagram -->
+  <div class="app-block">
+    <div class="app-head">
+      <div class="ver">C</div>
+      <h3>Template Instagram · 1080 × 1080</h3>
+      <div class="desc">Variação fundo escuro (feed institucional) e variação clara (campanhas promocionais)</div>
+    </div>
+    <div class="ig-wrap">
+      <div class="ig-post">
+        <div class="ig-top">
+          <svg width="120" height="32" viewBox="0 0 320 80">
+            <g fill="none" stroke="#F5F3EE" stroke-width="2.4" stroke-linecap="square">
+              <path d="M14 56 L34 24 L54 56" />
+              <path d="M24 56 L34 40 L44 56" />
+            </g>
+            <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#F5F3EE" letter-spacing="1">RAMOS</text>
+            <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+            <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+          </svg>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:1.5px; color: var(--gold);">01 / 03</span>
+        </div>
+        <div class="ig-content">Sem juros<br/>de banco.<br/><em>Com tempo<br/>do seu lado.</em></div>
+        <div class="ig-bottom">
+          <span>@ramoscapital</span>
+          <span>UBERLÂNDIA · MG</span>
+        </div>
+      </div>
+      <div class="ig-post alt">
+        <div class="ig-top">
+          <svg width="120" height="32" viewBox="0 0 320 80">
+            <g fill="none" stroke="#0A1628" stroke-width="2.4" stroke-linecap="square">
+              <path d="M14 56 L34 24 L54 56" />
+              <path d="M24 56 L34 40 L44 56" />
+            </g>
+            <text x="74" y="46" font-family="Cormorant Garamond, serif" font-weight="300" font-size="32" fill="#0A1628" letter-spacing="1">RAMOS</text>
+            <text x="186" y="46" font-family="Plus Jakarta Sans, sans-serif" font-weight="500" font-size="13" fill="#C9A84C" letter-spacing="4">CAPITAL</text>
+            <line x1="176" y1="32" x2="176" y2="50" stroke="#C9A84C" stroke-width="1"/>
+          </svg>
+          <span style="font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:1.5px; color: var(--gold-2);">02 / 03</span>
+        </div>
+        <div class="ig-content">Cartas de<br/><em>R$ 150 a 500 mil</em><br/>para quem<br/>pensa em décadas.</div>
+        <div class="ig-bottom">
+          <span>@ramoscapital</span>
+          <span>UBERLÂNDIA · MG</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email signature -->
+  <div class="app-block">
+    <div class="app-head">
+      <div class="ver">D</div>
+      <h3>Assinatura de E-mail</h3>
+      <div class="desc">Tabela HTML 640 px · compatível com Gmail, Outlook e Apple Mail</div>
+    </div>
+    <div class="email-frame">
+      <div class="email-pre">— Atenciosamente,</div>
+      <div class="esig">
+        <div class="esig-mark">
+          <svg width="36" height="36" viewBox="0 0 60 60">
+            <g fill="none" stroke="#C9A84C" stroke-width="3" stroke-linecap="square" transform="translate(0 -2)">
+              <path d="M0 50 L30 4 L60 50" />
+              <path d="M15 50 L30 28 L45 50" />
+            </g>
+          </svg>
+        </div>
+        <div class="esig-info">
+          <div class="nm">Alexandre Ramos</div>
+          <div class="rl">Consultor de Patrimônio</div>
+          <div class="meta">
+            +55 34 9 9876 5432 · alexandre@ramoscapital.com.br<br/>
+            ramoscapital.com.br · Uberlândia · MG
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── VOZ ─────────── -->
+<section class="panel" id="voz" role="tabpanel">
+  <div class="section-head">
+    <div class="eyebrow">Entregável 05 · Slogan & Tom de Voz</div>
+    <h1 class="section-title">Como a Ramos Capital fala.</h1>
+    <p class="section-lede">A linguagem é direta, paciente e nunca sensacionalista. Falamos com quem já sabe contar — não com quem precisa ser convencido.</p>
+  </div>
+
+  <div class="voice-grid">
+
+    <div class="voice-card span-7">
+      <div class="v-head">5 opções de slogan</div>
+      <ol class="slogan-list">
+        <li><span class="num">01</span><span class="text">Patrimônio que dura gerações.</span></li>
+        <li><span class="num">02</span><span class="text">Tempo a favor de quem planeja.</span></li>
+        <li><span class="num">03</span><span class="text">Sem juros. Sem pressa. Com plano.</span></li>
+        <li><span class="num">04</span><span class="text">A construção certa do seu patrimônio.</span></li>
+        <li><span class="num">05</span><span class="text">Capital paciente. Resultado real.</span></li>
+      </ol>
+    </div>
+
+    <div class="voice-card navy span-5">
+      <div class="v-head">Tagline institucional</div>
+      <div class="tag-quote">"Construímos com famílias brasileiras o patrimônio que os bancos cobram para emprestar."</div>
+      <div class="tag-attr">Ramos Capital · 2026</div>
+    </div>
+
+    <div class="voice-card dark span-12">
+      <div class="v-head">Headlines · Meta Ads</div>
+      <div class="ad-card">
+        <div class="label">Anúncio · 01 · Imobiliário</div>
+        <div class="headline">Seu próximo imóvel não precisa custar três vezes o valor de tabela.</div>
+        <div class="body">Estruture uma carta de crédito imobiliária e pague o imóvel pelo preço dele. Não pelo preço do banco.</div>
+      </div>
+      <div class="ad-card">
+        <div class="label">Anúncio · 02 · Veículo</div>
+        <div class="headline">O carro novo que você quer, sem o financiamento que ninguém quer.</div>
+        <div class="body">Cartas de R$ 80 mil a R$ 250 mil. Parcela fixa, prazo claro, sem CET de 28 % ao ano.</div>
+      </div>
+      <div class="ad-card">
+        <div class="label">Anúncio · 03 · Posicionamento</div>
+        <div class="headline">Em Uberlândia, há 12 anos ajudando famílias a construir patrimônio real.</div>
+        <div class="body">Atendimento individual, planejamento de longo prazo e total transparência sobre cada custo.</div>
+      </div>
+    </div>
+
+    <div class="voice-card span-12">
+      <div class="v-head">Guia de Tom</div>
+      <div class="word-cols">
+        <div class="word-col uses">
+          <h5>↗ Palavras que usamos</h5>
+          <ul>
+            <li>Patrimônio</li>
+            <li>Estruturar</li>
+            <li>Planejamento</li>
+            <li>Disciplina</li>
+            <li>Trajetória</li>
+          </ul>
+        </div>
+        <div class="word-col avoids">
+          <h5>✕ Palavras que evitamos</h5>
+          <ul>
+            <li>Oportunidade imperdível</li>
+            <li>Promoção</li>
+            <li>Garantido</li>
+            <li>Fácil</li>
+            <li>Rápido</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <span>Ramos Capital · Brand System</span>
+  <span>Uberlândia · MG · Brasil</span>
+  <span>© 2026 · v1.0</span>
+</div>
+
+<div class="toast" id="toast">HEX copiado</div>
+
+<script>
+  // ── Color data ──
+  const COLORS = [
+    {
+      slug: 'azul',
+      name: 'Azul Autoridade',
+      hex: '#0A1628',
+      rgb: '10, 22, 40',
+      hsl: '218°, 60%, 10%',
+      role: 'Primária',
+      use: 'Fundos institucionais, headers, materiais oficiais, navegação. É o ar que a marca respira — domina 60 % de qualquer composição.',
+      pairs: [
+        { l: 'Bone', ok: true },
+        { l: 'Gold', ok: true },
+        { l: 'Moss', ok: true },
+        { l: 'Graphite', ok: false },
+      ],
+      fg: '#F5F3EE',
+      sub: '#C9A84C',
+    },
+    {
+      slug: 'gold',
+      name: 'Ouro Capital',
+      hex: '#C9A84C',
+      rgb: '201, 168, 76',
+      hsl: '43°, 54%, 54%',
+      role: 'Secundária / Destaque',
+      use: 'Fios divisores, números financeiros positivos, CTAs em fundo escuro, tipografia de prestígio. Máximo de 10 % da composição.',
+      pairs: [
+        { l: 'Navy', ok: true },
+        { l: 'Graphite', ok: true },
+        { l: 'Bone', ok: false },
+        { l: 'Moss', ok: false },
+      ],
+      fg: '#0A1628',
+      sub: '#0A1628',
+    },
+    {
+      slug: 'bone',
+      name: 'Bone Sereno',
+      hex: '#F5F3EE',
+      rgb: '245, 243, 238',
+      hsl: '40°, 26%, 95%',
+      role: 'Neutra Clara',
+      use: 'Fundos de cards, papelaria, área de conteúdo de longa leitura. Substitui o branco puro — mais quente, mais editorial.',
+      pairs: [
+        { l: 'Navy', ok: true },
+        { l: 'Graphite', ok: true },
+        { l: 'Moss', ok: true },
+        { l: 'Gold', ok: false },
+      ],
+      fg: '#0A1628',
+      sub: '#C9A84C',
+    },
+    {
+      slug: 'graphite',
+      name: 'Grafite',
+      hex: '#1C1C1E',
+      rgb: '28, 28, 30',
+      hsl: '240°, 3%, 11%',
+      role: 'Neutra Escura',
+      use: 'Tipografia de corpo sobre fundos claros, footers, cartões alternativos quando o azul cansa visualmente.',
+      pairs: [
+        { l: 'Bone', ok: true },
+        { l: 'Gold', ok: true },
+        { l: 'Moss', ok: true },
+        { l: 'Navy', ok: false },
+      ],
+      fg: '#F5F3EE',
+      sub: '#C9A84C',
+    },
+    {
+      slug: 'moss',
+      name: 'Verde Crescimento',
+      hex: '#2D6A4F',
+      rgb: '45, 106, 79',
+      hsl: '154°, 40%, 30%',
+      role: 'Acento · Sucesso',
+      use: 'Indicadores de evolução, confirmações, gráficos positivos. Funcional, não decorativo — entra apenas quando há dado para sustentá-lo.',
+      pairs: [
+        { l: 'Navy', ok: true },
+        { l: 'Bone', ok: true },
+        { l: 'Graphite', ok: true },
+        { l: 'Gold', ok: false },
+      ],
+      fg: '#F5F3EE',
+      sub: '#C9A84C',
+    },
+  ];
+
+  // ── Render color cards ──
+  const grid = document.getElementById('colorGrid');
+  COLORS.forEach((c, idx) => {
+    const card = document.createElement('div');
+    card.className = 'color-card';
+    card.innerHTML = `
+      <div class="swatch" style="background:${c.hex}; color:${c.fg}">
+        <span class="corner" style="color:${c.sub}">${String(idx+1).padStart(2,'0')} · ${c.role}</span>
+        <span class="swatch-name">${c.name}</span>
+        <span class="swatch-token">${c.hex}</span>
+      </div>
+      <div class="color-body">
+        <div class="color-row">
+          <span class="lbl">HEX</span>
+          <span class="val">${c.hex}</span>
+          <button class="copy-btn" data-copy="${c.hex}">Copiar</button>
+        </div>
+        <div class="color-row">
+          <span class="lbl">RGB</span>
+          <span class="val">rgb(${c.rgb})</span>
+          <button class="copy-btn" data-copy="rgb(${c.rgb})">Copiar</button>
+        </div>
+        <div class="color-row">
+          <span class="lbl">HSL</span>
+          <span class="val">hsl(${c.hsl})</span>
+          <button class="copy-btn" data-copy="hsl(${c.hsl})">Copiar</button>
+        </div>
+        <div class="color-usage">
+          <h5>Quando usar</h5>
+          <p style="margin: 0 0 14px;">${c.use}</p>
+          <h5>Combinações</h5>
+          <div class="pill-row">
+            ${c.pairs.map(p => `<span class="pill ${p.ok ? 'good' : 'bad'}">${p.ok ? '✓' : '✕'} ${p.l}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // ── Copy to clipboard ──
+  const toast = document.getElementById('toast');
+  let toastTimer = null;
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.copy-btn');
+    if (!btn) return;
+    const val = btn.dataset.copy;
+    const done = () => {
+      const orig = btn.textContent;
+      btn.textContent = 'Copiado';
+      btn.classList.add('copied');
+      toast.textContent = `Copiado · ${val}`;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        btn.textContent = orig;
+        btn.classList.remove('copied');
+        toast.classList.remove('show');
+      }, 1600);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(done, done);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = val; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(e){}
+      ta.remove(); done();
+    }
+  });
+
+  // ── Tab nav ──
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      const id = t.dataset.tab;
+      document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
