@@ -769,6 +769,79 @@
   }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+  /* ══════════════ MOBILE ≤ 768px ══════════════ */
+  @media (max-width: 768px) {
+    /* Hero */
+    .hero { padding: 100px 0 56px; min-height: unset; }
+    h1.hero-h1 { font-size: clamp(32px, 9vw, 52px); margin: 18px 0 16px; max-width: 100%; }
+    .hero-sub { font-size: 15px; max-width: 100%; margin-bottom: 28px; }
+    .btn-row { gap: 10px; }
+    .btn { padding: 14px 20px; font-size: 13px; }
+    .hero-stats { margin-top: 48px; padding-top: 28px; }
+
+    /* Admin strip */
+    .admin-row { gap: 28px 36px; }
+    .admin-logo { font-size: 20px; }
+
+    /* Sections */
+    section { padding: 64px 0; }
+    .section-head { margin-bottom: 40px; }
+
+    /* VS cards */
+    .vs-card { padding: 32px 24px; }
+    .vs-list li { gap: 14px; padding: 14px 0; }
+
+    /* Simulator */
+    .sim-toggles { gap: 8px; flex-direction: column; }
+    .sim-toggle { width: fit-content; }
+    .sim-toggle button { padding: 8px 14px; font-size: 11.5px; min-height: 40px; }
+    .sim-card { padding: 28px 18px; }
+    .sim-result-row .num { font-size: 20px; }
+
+    /* Steps */
+    .step { padding: 28px 22px 24px; }
+
+    /* Testimonials */
+    .testi-card { padding: 24px; }
+
+    /* Form */
+    .form-card { padding: 24px 18px; }
+    .form-meta { grid-template-columns: 1fr; gap: 14px; }
+    .field-row-2 { grid-template-columns: 1fr; }
+    .form-copy h2 { font-size: clamp(26px, 7vw, 38px); }
+
+    /* Footer */
+    .foot-grid { gap: 28px; }
+    .foot-base { flex-direction: column; gap: 8px; font-size: 10px; }
+
+    /* Scroll cue hidden on mobile */
+    .scroll-cue { display: none; }
+  }
+
+  /* ══════════════ MOBILE ≤ 480px ══════════════ */
+  @media (max-width: 480px) {
+    .hero { padding: 88px 0 48px; }
+    h1.hero-h1 { font-size: clamp(30px, 10vw, 44px); }
+    .wrap { padding: 0 16px; }
+    .nav-inner { padding: 16px 16px; }
+    section { padding: 52px 0; }
+    .section-head h2 { font-size: clamp(26px, 8vw, 38px); }
+    .kpi-val { font-size: 22px; }
+    .admin-row { gap: 20px 28px; }
+    .admin-logo { font-size: 17px; }
+    .vs-card { padding: 24px 18px; }
+    .vs-list li strong { font-size: 14px; }
+    .sim-result-row .num { font-size: 18px; }
+    .sim-result-row .lbl { font-size: 12px; }
+    .testi { margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+    .testi-text { font-size: 17px; }
+    .form-card { padding: 20px 16px; border-radius: 12px; }
+    .submit-btn { padding: 16px; font-size: 13px; }
+    .lgpd { font-size: 10.5px; }
+    footer { padding: 52px 0 20px; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+  }
+
 </style>
 </head>
 <body>
