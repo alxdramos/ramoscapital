@@ -842,6 +842,66 @@
     .foot-grid { grid-template-columns: 1fr 1fr; }
   }
 
+  /* ─────── MODAL CAPTURA SIMULADOR ─────── */
+  .sim-modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(10,22,40,0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .sim-modal-overlay.open { display: flex; }
+  .sim-modal {
+    background: var(--navy-2);
+    border: 1px solid var(--line-gold);
+    border-radius: 16px;
+    padding: 40px 36px 36px;
+    width: 100%; max-width: 440px;
+    position: relative;
+    animation: modalIn .28s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  }
+  @media (max-width: 480px) { .sim-modal { padding: 30px 22px 26px; } }
+  .sim-modal-close {
+    position: absolute; top: 16px; right: 18px;
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 22px; line-height: 1;
+    padding: 4px; transition: color .15s;
+  }
+  .sim-modal-close:hover { color: var(--bone); }
+  .sim-modal-tag {
+    display: inline-block;
+    font-size: 10px; letter-spacing: 2.2px; text-transform: uppercase;
+    color: var(--gold); font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+  }
+  .sim-modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem; font-weight: 400;
+    color: var(--bone); margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .sim-modal h3 em { color: var(--gold); font-style: italic; }
+  .sim-modal-sub {
+    color: var(--muted); font-size: 13.5px; margin: 0 0 24px; line-height: 1.5;
+  }
+  .sim-modal-summary {
+    background: rgba(212,175,55,0.08);
+    border: 1px solid var(--line-gold);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    font-size: 12.5px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+  .sim-modal-summary strong { color: var(--gold); }
+
 </style>
 </head>
 <body>
@@ -1050,9 +1110,9 @@
             <span class="num" id="resEcon">R$ 0</span>
           </div>
 
-          <a id="simWhats" class="btn btn-primary sim-cta" target="_blank" rel="noopener">
+          <button id="simWhats" class="btn btn-primary sim-cta" type="button">
             Quero essa simulação por WhatsApp <span class="arr">→</span>
-          </a>
+          </button>
           <p style="font-size:11px; color:var(--muted-2); margin-top:14px; text-align:center; line-height:1.5;">
             Cálculos aproximados. Valores exatos sujeitos ao grupo, prazo e administradora escolhida.
           </p>
@@ -1300,6 +1360,36 @@
   </div>
 </footer>
 
+<!-- ── MODAL CAPTURA SIMULADOR ── -->
+<div class="sim-modal-overlay" id="simModalOverlay" role="dialog" aria-modal="true" aria-labelledby="simModalTitle">
+  <div class="sim-modal">
+    <button class="sim-modal-close" id="simModalClose" aria-label="Fechar">✕</button>
+    <span class="sim-modal-tag">Simulação personalizada</span>
+    <h3 id="simModalTitle">Receba sua <em>simulação</em><br>por WhatsApp</h3>
+    <p class="sim-modal-sub">Informe seus dados para enviarmos os detalhes e te atendermos com mais precisão.</p>
+    <div class="sim-modal-summary" id="simModalSummary"></div>
+    <form id="simLeadForm" novalidate>
+      <div class="field-group" id="simNomeGroup">
+        <label for="simNome">Seu nome</label>
+        <input id="simNome" type="text" placeholder="Ex.: Maria Silva" autocomplete="name" />
+        <div class="field-error">Informe seu nome.</div>
+      </div>
+      <div class="field-group" id="simFoneGroup">
+        <label for="simFone">WhatsApp com DDD</label>
+        <input id="simFone" type="tel" placeholder="(34) 99999-9999" maxlength="15" autocomplete="tel" />
+        <div class="field-error">Informe um WhatsApp válido com DDD.</div>
+      </div>
+      <button type="submit" class="submit-btn" id="simSubmitBtn">
+        <span class="submit-text">Enviar e abrir WhatsApp</span>
+        <span class="spin" style="display:none"></span>
+      </button>
+      <p style="font-size:10.5px;color:var(--muted-2);text-align:center;margin:12px 0 0;line-height:1.5;">
+        Seus dados são protegidos pela LGPD e nunca serão compartilhados.
+      </p>
+    </form>
+  </div>
+</div>
+
 <script>
   // ─────────────── NAVBAR scroll ───────────────
   const nav = document.getElementById('nav');
@@ -1535,12 +1625,87 @@
 
     const prodLabel = prod === 'imovel' ? 'imóvel' : 'veículo';
     const msg = `Olá! Simulei um consórcio de ${prodLabel}: carta de ${fmtBRL(credito)} em ${prazo} meses (meia parcela ~${fmtBRL(meiaParcela)}). Quero entender melhor.`;
-    simWhats.href = `https://wa.me/5534987001441?text=${encodeURIComponent(msg)}`;
+    simWhats._waMsg = msg;
+    simWhats._simSummary = `${prod === 'imovel' ? '🏠 Imóvel' : '🚗 Veículo'} · Carta ${fmtBRL(credito)} · ${prazo} meses · Parcela ~${fmtBRL(parcela)}`;
   }
   cartaSlider.addEventListener('input', updateSim);
   prazoSlider.addEventListener('input', updateSim);
   applyBounds();
   updateSim();
+
+  // ─────────────── MODAL SIMULADOR ───────────────
+  const simModalOverlay = document.getElementById('simModalOverlay');
+  const simModalClose   = document.getElementById('simModalClose');
+  const simLeadForm     = document.getElementById('simLeadForm');
+  const simNome         = document.getElementById('simNome');
+  const simFone         = document.getElementById('simFone');
+  const simSubmitBtn    = document.getElementById('simSubmitBtn');
+  const simNomeGroup    = document.getElementById('simNomeGroup');
+  const simFoneGroup    = document.getElementById('simFoneGroup');
+  const simModalSummary = document.getElementById('simModalSummary');
+
+  function openSimModal() {
+    simModalSummary.innerHTML = simWhats._simSummary || '';
+    simModalOverlay.classList.add('open');
+    simNome.focus();
+  }
+  function closeSimModal() {
+    simModalOverlay.classList.remove('open');
+    simLeadForm.reset();
+    simNomeGroup.classList.remove('error');
+    simFoneGroup.classList.remove('error');
+    simSubmitBtn.disabled = false;
+    simSubmitBtn.querySelector('.submit-text').textContent = 'Enviar e abrir WhatsApp';
+    simSubmitBtn.querySelector('.spin').style.display = 'none';
+  }
+
+  simWhats.addEventListener('click', openSimModal);
+  simModalClose.addEventListener('click', closeSimModal);
+  simModalOverlay.addEventListener('click', (e) => { if (e.target === simModalOverlay) closeSimModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSimModal(); });
+
+  simFone.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g,'').slice(0,11);
+    if (v.length <= 2) e.target.value = v.length ? '(' + v : '';
+    else if (v.length <= 6) e.target.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if (v.length <= 10) e.target.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+    else e.target.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  });
+
+  simLeadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nomeVal = simNome.value.trim();
+    const foneVal = simFone.value.replace(/\D/g,'');
+    let ok = true;
+    simNomeGroup.classList.toggle('error', !nomeVal); if (!nomeVal) ok = false;
+    simFoneGroup.classList.toggle('error', foneVal.length < 10); if (foneVal.length < 10) ok = false;
+    if (!ok) return;
+
+    simSubmitBtn.disabled = true;
+    simSubmitBtn.querySelector('.submit-text').textContent = 'Enviando…';
+    simSubmitBtn.querySelector('.spin').style.display = 'inline-block';
+
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNm_aeof_EPpY7FDaLlTWnkqBzV9XmEu6_7NmEiLVNVYaBVh2fOn8pB9LJL2GVk0NKbw/exec';
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+        nome: nomeVal,
+        whatsapp: simFone.value,
+        objetivo: prod === 'imovel' ? 'Imóvel' : 'Veículo',
+        prazo: prazoSlider.value,
+        origem: 'Simulador — ' + window.location.href
+      })
+    }).catch(() => {});
+
+    setTimeout(() => {
+      closeSimModal();
+      const waMsg = simWhats._waMsg + ` Me chamo ${nomeVal}.`;
+      window.open(`https://wa.me/5534987001441?text=${encodeURIComponent(waMsg)}`, '_blank');
+    }, 800);
+  });
 
   // ─────────────── FORM ───────────────
   const fone = document.getElementById('fFone');
@@ -1573,23 +1738,21 @@
     submitBtn.classList.add('loading'); submitBtn.disabled = true;
 
     // ── CRM: salva lead no Google Sheets ──
-    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyvhhWGRd1DUJD1wc2gnWdpDazhGlsV7s2VmF6b5xX5f2leHzwJ_6wMm3E_bDpqZ7vrzw/exec';
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNm_aeof_EPpY7FDaLlTWnkqBzV9XmEu6_7NmEiLVNVYaBVh2fOn8pB9LJL2GVk0NKbw/exec';
     const objMap = { imovel: 'Imóvel', veiculo: 'Veículo', investir: 'Investimento', outro: 'Outro' };
-    if (SHEETS_URL !== 'COLE_AQUI_A_URL_DO_SEU_GOOGLE_APPS_SCRIPT') {
-      fetch(SHEETS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
-          nome: nome,
-          whatsapp: fone.value,
-          objetivo: objMap[obj] || obj,
-          prazo: prz,
-          origem: window.location.href
-        })
-      }).catch(() => {});
-    }
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+        nome: nome,
+        whatsapp: fone.value,
+        objetivo: objMap[obj] || obj,
+        prazo: prz,
+        origem: window.location.href
+      })
+    }).catch(() => {});
 
     setTimeout(() => {
       form.style.display = 'none';
