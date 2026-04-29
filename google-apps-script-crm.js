@@ -47,10 +47,11 @@ function doGet(e) {
           data:      row[0] ? String(row[0]) : '',
           nome:      row[1] ? String(row[1]).trim() : '',
           whatsapp:  row[2] ? String(row[2]).trim() : '',
-          objetivo:  row[3] ? String(row[3]).trim() : '',
-          prazo:     row[4] ? String(row[4]).trim() : '',
-          origem:    row[5] ? String(row[5]).trim() : 'site',
-          statusPlanilha: row[6] ? String(row[6]).trim() : 'Novo'
+          email:     row[3] ? String(row[3]).trim() : '',
+          objetivo:  row[4] ? String(row[4]).trim() : '',
+          prazo:     row[5] ? String(row[5]).trim() : '',
+          origem:    row[6] ? String(row[6]).trim() : 'site',
+          statusPlanilha: row[7] ? String(row[7]).trim() : 'Novo'
         }));
 
       return jsonOut({ status: 'ok', leads: leads });
@@ -71,8 +72,8 @@ function doPost(e) {
 
     // Cria cabeçalho na primeira execução
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['Data/Hora', 'Nome', 'WhatsApp', 'Objetivo', 'Prazo', 'Origem', 'Status']);
-      sheet.getRange(1, 1, 1, 7)
+      sheet.appendRow(['Data/Hora', 'Nome', 'WhatsApp', 'E-mail', 'Objetivo', 'Prazo', 'Origem', 'Status']);
+      sheet.getRange(1, 1, 1, 8)
         .setFontWeight('bold')
         .setBackground('#0A1628')
         .setFontColor('#D4AF37');
@@ -85,6 +86,7 @@ function doPost(e) {
       data.data     || new Date().toLocaleString('pt-BR'),
       data.nome     || '',
       data.whatsapp || '',
+      data.email    || '',
       data.objetivo || '',
       data.prazo    || '',
       data.origem   || 'site',
@@ -93,7 +95,7 @@ function doPost(e) {
 
     // Formata a última linha
     const lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 7)
+    sheet.getRange(lastRow, 8)
       .setBackground('#e6f4ea')
       .setFontColor('#1a7a3a');
 

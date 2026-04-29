@@ -1261,6 +1261,12 @@
             <div class="field-error">Informe um WhatsApp válido com DDD.</div>
           </div>
 
+          <div class="field-group">
+            <label for="fEmail">E-mail</label>
+            <input type="email" id="fEmail" name="email" placeholder="seu@email.com" autocomplete="email">
+            <div class="field-error">Informe um e-mail válido.</div>
+          </div>
+
           <div class="field-row-2">
             <div class="field-group">
               <label for="fObj">Objetivo</label>
@@ -1378,6 +1384,11 @@
         <label for="simFone">WhatsApp com DDD</label>
         <input id="simFone" type="tel" placeholder="(34) 99999-9999" maxlength="15" autocomplete="tel" />
         <div class="field-error">Informe um WhatsApp válido com DDD.</div>
+      </div>
+      <div class="field-group" id="simEmailGroup">
+        <label for="simEmail">E-mail</label>
+        <input id="simEmail" type="email" placeholder="seu@email.com" autocomplete="email" />
+        <div class="field-error">Informe um e-mail válido.</div>
       </div>
       <button type="submit" class="submit-btn" id="simSubmitBtn">
         <span class="submit-text">Enviar e abrir WhatsApp</span>
@@ -1639,9 +1650,11 @@
   const simLeadForm     = document.getElementById('simLeadForm');
   const simNome         = document.getElementById('simNome');
   const simFone         = document.getElementById('simFone');
+  const simEmail        = document.getElementById('simEmail');
   const simSubmitBtn    = document.getElementById('simSubmitBtn');
   const simNomeGroup    = document.getElementById('simNomeGroup');
   const simFoneGroup    = document.getElementById('simFoneGroup');
+  const simEmailGroup   = document.getElementById('simEmailGroup');
   const simModalSummary = document.getElementById('simModalSummary');
 
   function openSimModal() {
@@ -1654,6 +1667,7 @@
     simLeadForm.reset();
     simNomeGroup.classList.remove('error');
     simFoneGroup.classList.remove('error');
+    simEmailGroup.classList.remove('error');
     simSubmitBtn.disabled = false;
     simSubmitBtn.querySelector('.submit-text').textContent = 'Enviar e abrir WhatsApp';
     simSubmitBtn.querySelector('.spin').style.display = 'none';
@@ -1674,11 +1688,14 @@
 
   simLeadForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nomeVal = simNome.value.trim();
-    const foneVal = simFone.value.replace(/\D/g,'');
+    const nomeVal  = simNome.value.trim();
+    const foneVal  = simFone.value.replace(/\D/g,'');
+    const emailVal = simEmail.value.trim();
+    const emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
     let ok = true;
-    simNomeGroup.classList.toggle('error', !nomeVal); if (!nomeVal) ok = false;
+    simNomeGroup.classList.toggle('error', !nomeVal);  if (!nomeVal) ok = false;
     simFoneGroup.classList.toggle('error', foneVal.length < 10); if (foneVal.length < 10) ok = false;
+    simEmailGroup.classList.toggle('error', !emailOk); if (!emailOk) ok = false;
     if (!ok) return;
 
     simSubmitBtn.disabled = true;
@@ -1694,6 +1711,7 @@
         data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
         nome: nomeVal,
         whatsapp: simFone.value,
+        email: emailVal,
         objetivo: prod === 'imovel' ? 'Imóvel' : 'Veículo',
         prazo: prazoSlider.value,
         origem: 'Simulador — ' + window.location.href
@@ -1724,15 +1742,18 @@
   }
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const nome = document.getElementById('fNome').value.trim();
-    const foneV = fone.value.replace(/\D/g,'');
-    const obj = document.getElementById('fObj').value;
-    const prz = document.getElementById('fPrazo').value;
+    const nome   = document.getElementById('fNome').value.trim();
+    const foneV  = fone.value.replace(/\D/g,'');
+    const emailV = document.getElementById('fEmail').value.trim();
+    const obj    = document.getElementById('fObj').value;
+    const prz    = document.getElementById('fPrazo').value;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailV);
     let ok = true;
-    setError('fNome', !nome); if (!nome) ok = false;
-    setError('fFone', foneV.length < 10); if (foneV.length < 10) ok = false;
-    setError('fObj', !obj); if (!obj) ok = false;
-    setError('fPrazo', !prz); if (!prz) ok = false;
+    setError('fNome',  !nome);              if (!nome) ok = false;
+    setError('fFone',  foneV.length < 10);  if (foneV.length < 10) ok = false;
+    setError('fEmail', !emailOk);           if (!emailOk) ok = false;
+    setError('fObj',   !obj);               if (!obj) ok = false;
+    setError('fPrazo', !prz);               if (!prz) ok = false;
     if (!ok) return;
 
     submitBtn.classList.add('loading'); submitBtn.disabled = true;
@@ -1748,6 +1769,7 @@
         data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
         nome: nome,
         whatsapp: fone.value,
+        email: emailV,
         objetivo: objMap[obj] || obj,
         prazo: prz,
         origem: window.location.href
