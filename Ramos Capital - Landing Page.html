@@ -465,11 +465,12 @@
   /* ─────── COMO FUNCIONA ─────── */
   .how-section { background: var(--navy-4); }
   .steps {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
     position: relative;
   }
-  @media (max-width: 880px) { .steps { grid-template-columns: 1fr; } }
+  @media (max-width: 1100px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .steps { grid-template-columns: 1fr; } }
   .steps::before {
     content: ""; position: absolute; top: 60px; left: 16%; right: 16%;
     height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
@@ -794,7 +795,7 @@
       <a href="#simulador">Simulador</a>
       <a href="#depoimentos">Depoimentos</a>
       <a href="#contato">Contato</a>
-      <a href="#contato" class="nav-cta">Falar com consultor</a>
+      <a href="#contato" class="nav-cta">Análise patrimonial</a>
     </div>
   </div>
 </nav>
@@ -804,10 +805,10 @@
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
     <span class="hero-tag"><span class="dot"></span>Capital paciente · Resultado real</span>
-    <h1 class="hero-h1">Seu patrimônio merece mais do que <em>juros de banco.</em></h1>
-    <p class="hero-sub">Ajudamos famílias do Brasil inteiro a comprar imóveis e veículos de forma planejada, sem entrada obrigatória e sem pagar juros.</p>
+    <h1 class="hero-h1">Consórcio não é aposta. <em>É a estratégia que constrói patrimônio.</em></h1>
+    <p class="hero-sub">A Ramos Capital estrutura o caminho para você adquirir imóveis e veículos com planejamento inteligente — sem entrada obrigatória e sem pagar os juros que o banco cobra para te emprestar o que já é seu.</p>
     <div class="btn-row">
-      <a class="btn btn-primary" href="#contato">Quero minha consultoria gratuita <span class="arr">→</span></a>
+      <a class="btn btn-primary" href="#contato">Quero minha análise patrimonial gratuita <span class="arr">→</span></a>
       <a class="btn btn-ghost" href="#como">Entender como funciona</a>
     </div>
     <div class="hero-stats" id="heroStats">
@@ -846,14 +847,14 @@
   <div class="wrap">
     <div class="section-head fade-in">
       <span class="eyebrow">A diferença essencial</span>
-      <h2>Dois caminhos. <em>Resultados</em> opostos.</h2>
-      <p>O banco lucra com a sua pressa. A Ramos Capital trabalha com a sua paciência. Veja o que muda no fim das contas.</p>
+      <h2>Financiamento compra pressa. <em>Consórcio compra estratégia.</em></h2>
+      <p>Quem precisa do bem amanhã talvez precise financiar. Quem quer construir patrimônio nos próximos anos precisa parar de pensar como consumidor e começar a pensar como estrategista.</p>
     </div>
 
     <div class="vs-grid fade-in">
       <div class="vs-card bank">
-        <div class="vs-head">O que o banco oferece</div>
-        <h3>Financiamento tradicional</h3>
+        <div class="vs-head">Financiamento bancário</div>
+        <h3>Posse imediata. Custo alto.</h3>
         <ul class="vs-list">
           <li>
             <div class="vs-icon"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 3 L11 11 M11 3 L3 11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
@@ -880,8 +881,8 @@
       </div>
 
       <div class="vs-card us">
-        <div class="vs-head">O que a Ramos Capital oferece</div>
-        <h3>Consultoria patrimonial</h3>
+        <div class="vs-head">Consórcio patrimonial</div>
+        <h3>Aquisição planejada. Inteligência de capital.</h3>
         <ul class="vs-list">
           <li>
             <div class="vs-icon"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
@@ -910,13 +911,83 @@
   </div>
 </section>
 
+<!-- ── PARA QUEM É ── -->
+<section id="para-quem" style="padding: 96px 0; border-top: 1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head fade-in">
+      <span class="eyebrow">Perfil ideal</span>
+      <h2>Para quem é <em>esta estratégia</em></h2>
+      <p>Consórcio patrimonial não é para todos — e ser honesto sobre isso é o que nos separa de qualquer vendedor de parcela.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px;">
+      <div style="background:rgba(212,175,55,0.06);border:1px solid var(--line-gold);border-radius:14px;padding:36px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;color:var(--gold);margin:0;line-height:1.2;">Esta estratégia é para você se…</h3>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:16px;">
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--bone);">Quer adquirir imóvel ou veículo sem depender exclusivamente de financiamento bancário</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--bone);">Tem renda e quer transformar capacidade mensal em patrimônio real</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--bone);">Pensa em médio e longo prazo — e entende que patrimônio se constrói com disciplina, não com pressa</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--bone);">Quer usar consórcio como ferramenta de planejamento, não como aposta</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--bone);">Busca orientação de quem estrutura cenários, não de quem apenas vende uma carta</span>
+          </li>
+        </ul>
+      </div>
+      <div style="background:rgba(199,123,123,0.05);border:1px solid rgba(199,123,123,0.22);border-radius:14px;padding:36px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:rgba(199,123,123,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;color:var(--danger);margin:0;line-height:1.2;">Provavelmente não é para você se…</h3>
+        </div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:16px;">
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 3 L11 11 M11 3 L3 11" stroke="var(--danger)" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--muted);">Precisa do bem nos próximos meses — nesse caso, o financiamento pode ser o caminho certo</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 3 L11 11 M11 3 L3 11" stroke="var(--danger)" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--muted);">Está procurando garantia de contemplação imediata — isso não existe em nenhum consórcio sério</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 3 L11 11 M11 3 L3 11" stroke="var(--danger)" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--muted);">Quer entrar sem entender prazo, lance e regras do grupo — falta de clareza vira problema</span>
+          </li>
+          <li style="display:flex;gap:12px;">
+            <svg style="flex-shrink:0;margin-top:4px;" width="14" height="14" viewBox="0 0 14 14"><path d="M3 3 L11 11 M11 3 L3 11" stroke="var(--danger)" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span style="font-size:14.5px;line-height:1.65;color:var(--muted);">Está buscando uma solução mágica sem planejamento financeiro real</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:40px;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--muted);font-style:italic;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.5;">"Consórcio não é sempre a melhor solução. Mas para quem pensa em patrimônio com planejamento, pode ser a mais inteligente."</p>
+  </div>
+</section>
+
 <!-- ── SIMULADOR ── -->
 <section id="simulador" class="sim-section">
   <div class="wrap">
     <div class="section-head fade-in">
       <span class="eyebrow">Simulador interativo</span>
-      <h2>Simule seu <em>consórcio</em> agora.</h2>
-      <p>Ajuste os controles abaixo e veja em tempo real a parcela estimada e quanto você economiza em relação a um financiamento bancário.</p>
+      <h2>Projete seu <em>plano de aquisição</em> patrimonial.</h2>
+      <p>Ajuste os valores abaixo, veja sua projeção em tempo real e envie o cenário para uma análise personalizada.</p>
     </div>
 
     <div class="sim-card fade-in">
@@ -978,7 +1049,7 @@
           </div>
 
           <a id="simWhats" class="btn btn-primary sim-cta" target="_blank" rel="noopener">
-            Quero essa simulação por WhatsApp <span class="arr">→</span>
+            Enviar cenário para análise <span class="arr">→</span>
           </a>
           <a href="/simulador-consorcio" class="btn" style="display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;border:1px solid rgba(212,175,55,0.35);color:var(--gold);border-radius:6px;padding:13px 24px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s;margin-top:10px;" onmouseover="this.style.background='rgba(212,175,55,0.08)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -997,9 +1068,9 @@
 <section id="como" class="how-section">
   <div class="wrap">
     <div class="section-head fade-in">
-      <span class="eyebrow">Como funciona</span>
-      <h2>Do primeiro contato à <em>conquista</em> do seu bem.</h2>
-      <p>Três passos claros, sem letras miúdas e sem promessas que não conseguimos sustentar.</p>
+      <span class="eyebrow">Método Ramos Capital</span>
+      <h2>Análise. Estruturação. Contratação. <em>Acompanhamento.</em></h2>
+      <p>Quatro etapas claras, sem letras miúdas e sem promessas que não conseguimos sustentar.</p>
     </div>
 
     <div class="steps">
@@ -1010,8 +1081,8 @@
           </svg>
         </div>
         <div class="step-num">01</div>
-        <h4>Consultoria gratuita</h4>
-        <p>Conversamos sobre seu objetivo, sua renda e seu horizonte de tempo. Sem custo, sem compromisso, sem script.</p>
+        <h4>Análise patrimonial</h4>
+        <p>Mapeamos seu objetivo, renda e horizonte de tempo. Montamos o cenário ideal antes de qualquer contratação.</p>
       </div>
       <div class="step fade-in">
         <div class="step-icon">
@@ -1021,7 +1092,7 @@
           </svg>
         </div>
         <div class="step-num">02</div>
-        <h4>Escolhemos o melhor grupo</h4>
+        <h4>Estruturação do cenário</h4>
         <p>Comparamos cartas, prazos e taxas entre HS, Banco do Brasil, Santander e Porto. Você fica com o ideal — não com o disponível.</p>
       </div>
       <div class="step fade-in">
@@ -1031,8 +1102,20 @@
           </svg>
         </div>
         <div class="step-num">03</div>
-        <h4>Você é contemplado</h4>
-        <p>Por sorteio mensal ou lance estratégico, garantido dentro do prazo. Acompanhamos cada etapa, do contrato à entrega da carta.</p>
+        <h4>Contratação inteligente</h4>
+        <p>Entramos no grupo certo, no momento certo. Com estratégia de lance definida e regras claras desde o início.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </div>
+        <div class="step-num">04</div>
+        <h4>Acompanhamento contínuo</h4>
+        <p>Do contrato à entrega da carta. Monitoramos sorteios, lances e contemplação — você nunca fica sozinho no processo.</p>
       </div>
     </div>
   </div>
@@ -1095,8 +1178,8 @@
   <div class="wrap">
     <div class="form-grid">
       <div class="form-copy fade-in">
-        <span class="eyebrow">Consultoria gratuita</span>
-        <h2>Comece sua estruturação <em>patrimonial</em> hoje.</h2>
+        <span class="eyebrow">Análise patrimonial gratuita</span>
+        <h2>Monte sua <em>estratégia patrimonial</em> agora.</h2>
         <p>Sem compromisso. Sem custo. Respondemos em até 2 horas em horário comercial — quem chega até aqui já tem nossa atenção integral.</p>
         <div class="form-meta">
           <div class="item">
@@ -1157,7 +1240,7 @@
           </div>
 
           <button type="submit" class="submit-btn" id="submitBtn">
-            <span class="submit-text">Quero minha consultoria gratuita</span>
+            <span class="submit-text">Quero minha análise patrimonial gratuita</span>
             <span class="arr">→</span>
             <span class="spin"></span>
           </button>
@@ -1465,7 +1548,7 @@
     resEcon.textContent = fmtBRL(econ);
 
     const prodLabel = prod === 'imovel' ? 'imóvel' : 'veículo';
-    const msg = `Olá! Simulei um consórcio de ${prodLabel}: carta de ${fmtBRL(credito)} em ${prazo} meses (meia parcela ~${fmtBRL(meiaParcela)}). Quero entender melhor.`;
+    const msg = `Olá, vim pelo site da Ramos Capital. Montei um cenário de ${prodLabel}: carta de ${fmtBRL(credito)} em ${prazo} meses (meia parcela ~${fmtBRL(meiaParcela)}). Quero uma análise para usar consórcio como estratégia de construção patrimonial.`;
     simWhats.href = `https://wa.me/5534998765432?text=${encodeURIComponent(msg)}`;
   }
   cartaSlider.addEventListener('input', updateSim);
