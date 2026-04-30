@@ -161,10 +161,10 @@
   h1.hero-h1 {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
-    font-size: clamp(40px, 6.2vw, 72px);
-    line-height: 1.04; letter-spacing: -0.8px;
+    font-size: clamp(36px, 5.4vw, 68px);
+    line-height: 1.08; letter-spacing: -0.6px;
     margin: 28px 0 22px;
-    max-width: 14ch;
+    max-width: 24ch;
   }
   h1.hero-h1 em {
     font-style: italic; color: var(--gold); font-weight: 400;
@@ -770,6 +770,30 @@
   }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+  /* Para quem é — grid responsivo */
+  .pq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 48px;
+  }
+  @media (max-width: 860px) {
+    .pq-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ══════════════ DESKTOP ≥ 1280px ══════════════ */
+  @media (min-width: 1280px) {
+    h1.hero-h1 { font-size: 68px; }
+    .hero-sub { font-size: 19px; }
+  }
+
+  /* ══════════════ TABLET 769px–1100px ══════════════ */
+  @media (min-width: 769px) and (max-width: 1100px) {
+    h1.hero-h1 { font-size: clamp(36px, 5vw, 54px); max-width: 100%; }
+    .hero-sub { font-size: 16px; }
+    .vs-grid { grid-template-columns: 1fr 1fr; }
+  }
+
   /* ══════════════ MOBILE ≤ 768px ══════════════ */
   @media (max-width: 768px) {
     /* Hero */
@@ -975,6 +999,85 @@
   </div>
 </section>
 
+<!-- ── SIMULADOR ── -->
+<section id="simulador" class="sim-section">
+  <div class="wrap">
+    <div class="section-head fade-in">
+      <span class="eyebrow">Simulador interativo</span>
+      <h2>Projete seu <em>plano de aquisição</em> patrimonial.</h2>
+      <p>Ajuste os valores abaixo, veja sua projeção em tempo real e envie o cenário para uma análise personalizada.</p>
+    </div>
+
+    <div class="sim-card fade-in">
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <div class="sim-toggles">
+            <div class="sim-toggle" id="prodToggle" data-active="imovel">
+              <button type="button" data-val="imovel" class="on">Imóvel</button>
+              <button type="button" data-val="veiculo">Veículo</button>
+            </div>
+            <div class="sim-toggle" id="modeToggle" data-active="credito">
+              <button type="button" data-val="credito" class="on">Por crédito</button>
+              <button type="button" data-val="parcela">Por meia parcela</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label for="cartaSlider" id="cartaLabel">Valor da carta de crédito</label>
+              <span class="val" id="cartaVal">R$ 250.000</span>
+            </div>
+            <input type="range" id="cartaSlider" min="100000" max="2000000" step="10000" value="250000">
+            <div class="slider-bounds" id="cartaBounds">
+              <span id="cartaMin">R$ 100k</span><span id="cartaMax">R$ 2M</span>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-row">
+              <label for="prazoSlider">Prazo em meses</label>
+              <span class="val" id="prazoVal">120 meses</span>
+            </div>
+            <input type="range" id="prazoSlider" min="60" max="240" step="6" value="120">
+            <div class="slider-bounds">
+              <span>60 meses</span><span>240 meses</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sim-results">
+          <div class="sim-result-row" id="primaryRow">
+            <span class="lbl" id="primaryLbl">Parcela mensal estimada</span>
+            <span class="num" id="resParcela">R$ 0</span>
+          </div>
+          <div class="sim-result-row" id="meiaRow">
+            <span class="lbl">Meia parcela mensal</span>
+            <span class="num" id="resMeia">R$ 0</span>
+          </div>
+          <div class="sim-result-row">
+            <span class="lbl">Taxa de administração total (≈15%)</span>
+            <span class="num" id="resTaxa">R$ 0</span>
+          </div>
+          <div class="sim-result-row">
+            <span class="lbl">Total pago ao final</span>
+            <span class="num" id="resTotal">R$ 0</span>
+          </div>
+          <div class="sim-result-row savings">
+            <span class="lbl">Economia vs financiamento bancário</span>
+            <span class="num" id="resEcon">R$ 0</span>
+          </div>
+
+          <button id="simWhats" class="btn btn-primary sim-cta" type="button">
+            Enviar cenário para análise <span class="arr">→</span>
+          </button>
+          <p style="font-size:11px; color:var(--muted-2); margin-top:14px; text-align:center; line-height:1.5;">
+            Cálculos aproximados. Valores exatos sujeitos ao grupo, prazo e administradora escolhida.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── SOBRE / VS ── -->
 <section id="sobre">
   <div class="wrap">
@@ -1052,7 +1155,7 @@
       <h2>Para quem é <em>esta estratégia</em></h2>
       <p>Consórcio patrimonial não é para todos. Ser honesto sobre isso é o que nos separa de qualquer vendedor de parcela.</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px;">
+    <div class="pq-grid">
       <div style="background:rgba(212,175,55,0.06);border:1px solid var(--line-gold);border-radius:14px;padding:36px;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
           <div style="width:34px;height:34px;border-radius:50%;background:var(--gold-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -1111,85 +1214,6 @@
       </div>
     </div>
     <p style="text-align:center;margin-top:40px;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--muted);font-style:italic;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.5;">"Consórcio não é sempre a melhor solução. Mas para quem pensa em patrimônio com planejamento, pode ser a mais inteligente."</p>
-  </div>
-</section>
-
-<!-- ── SIMULADOR ── -->
-<section id="simulador" class="sim-section">
-  <div class="wrap">
-    <div class="section-head fade-in">
-      <span class="eyebrow">Simulador interativo</span>
-      <h2>Projete seu <em>plano de aquisição</em> patrimonial.</h2>
-      <p>Ajuste os valores abaixo, veja sua projeção em tempo real e envie o cenário para uma análise personalizada.</p>
-    </div>
-
-    <div class="sim-card fade-in">
-      <div class="sim-grid">
-        <div class="sim-controls">
-          <div class="sim-toggles">
-            <div class="sim-toggle" id="prodToggle" data-active="imovel">
-              <button type="button" data-val="imovel" class="on">Imóvel</button>
-              <button type="button" data-val="veiculo">Veículo</button>
-            </div>
-            <div class="sim-toggle" id="modeToggle" data-active="credito">
-              <button type="button" data-val="credito" class="on">Por crédito</button>
-              <button type="button" data-val="parcela">Por meia parcela</button>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="field-row">
-              <label for="cartaSlider" id="cartaLabel">Valor da carta de crédito</label>
-              <span class="val" id="cartaVal">R$ 250.000</span>
-            </div>
-            <input type="range" id="cartaSlider" min="100000" max="2000000" step="10000" value="250000">
-            <div class="slider-bounds" id="cartaBounds">
-              <span id="cartaMin">R$ 100k</span><span id="cartaMax">R$ 2M</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-row">
-              <label for="prazoSlider">Prazo em meses</label>
-              <span class="val" id="prazoVal">120 meses</span>
-            </div>
-            <input type="range" id="prazoSlider" min="60" max="240" step="6" value="120">
-            <div class="slider-bounds">
-              <span>60 meses</span><span>240 meses</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="sim-results">
-          <div class="sim-result-row" id="primaryRow">
-            <span class="lbl" id="primaryLbl">Parcela mensal estimada</span>
-            <span class="num" id="resParcela">R$ 0</span>
-          </div>
-          <div class="sim-result-row" id="meiaRow">
-            <span class="lbl">Meia parcela mensal</span>
-            <span class="num" id="resMeia">R$ 0</span>
-          </div>
-          <div class="sim-result-row">
-            <span class="lbl">Taxa de administração total (≈15%)</span>
-            <span class="num" id="resTaxa">R$ 0</span>
-          </div>
-          <div class="sim-result-row">
-            <span class="lbl">Total pago ao final</span>
-            <span class="num" id="resTotal">R$ 0</span>
-          </div>
-          <div class="sim-result-row savings">
-            <span class="lbl">Economia vs financiamento bancário</span>
-            <span class="num" id="resEcon">R$ 0</span>
-          </div>
-
-          <button id="simWhats" class="btn btn-primary sim-cta" type="button">
-            Enviar cenário para análise <span class="arr">→</span>
-          </button>
-          <p style="font-size:11px; color:var(--muted-2); margin-top:14px; text-align:center; line-height:1.5;">
-            Cálculos aproximados. Valores exatos sujeitos ao grupo, prazo e administradora escolhida.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
