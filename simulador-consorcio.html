@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Simulador de Consórcio — Ramos Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1628;--navy-2:#0F2044;--navy-3:#0d1f36;
+  --gold:#D4AF37;--gold-2:#C9A84C;
+  --gold-soft:rgba(212,175,55,.10);--gold-line:rgba(212,175,55,.28);
+  --bone:#F5F3EE;--bone-2:#FAF8F4;
+  --muted:#8A9BB5;--muted-2:rgba(138,155,181,.45);
+  --moss:#40916C;--moss-soft:rgba(64,145,108,.14);
+  --danger:#E07070;--danger-soft:rgba(224,112,112,.12);
+  --line:rgba(245,243,238,.07);--line-s:rgba(245,243,238,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--bone);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+button,input,select{font-family:inherit}
+img,svg{display:block;max-width:100%}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(10,22,40,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1300px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:16px}
+.nav-logo{display:flex;align-items:center;text-decoration:none;cursor:pointer;background:none;border:none}
+.nav-div{height:26px;width:1px;background:var(--line-s);flex-shrink:0}
+.nav-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase}
+.nav-steps{margin-left:auto;display:flex;align-items:center;gap:6px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--line-s);transition:all .3s}
+.sdot.active{background:var(--gold);width:22px;border-radius:3px}
+.sdot.done{background:var(--moss)}
+
+/* MAIN */
+.main{max-width:1300px;margin:0 auto;padding:48px 32px 100px}
+@media(max-width:640px){.main{padding:32px 20px 80px}}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.display{font-family:'Cormorant Garamond',serif;font-weight:300;line-height:1.08;letter-spacing:-.3px}
+.h1{font-size:46px}
+.h2{font-size:32px}
+.sub{color:var(--muted);font-size:15px;line-height:1.65;max-width:520px}
+
+/* BACK BUTTON */
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;background:none;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:color .2s;padding:0;margin-bottom:28px}
+.back-btn:hover{color:var(--bone)}
+.back-btn:hover svg{transform:translateX(-3px)}
+.back-btn svg{transition:transform .2s}
+
+/* SCREEN 1 — Admin Grid */
+.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:40px;max-width:760px}
+@media(max-width:560px){.admin-grid{grid-template-columns:1fr}}
+
+.admin-card{background:var(--navy-3);border:1px solid var(--line-s);border-radius:10px;padding:26px 28px;cursor:pointer;transition:border-color .25s,transform .25s,box-shadow .25s;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.admin-card::after{content:'';position:absolute;inset:0;background:var(--gold-soft);opacity:0;transition:opacity .25s}
+.admin-card:hover{border-color:var(--gold-line);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.admin-card:hover::after{opacity:1}
+.admin-card:hover .ac-arrow{opacity:1;transform:translateX(0)}
+.ac-icon{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;position:relative;z-index:1}
+.ac-info{position:relative;z-index:1;flex:1}
+.ac-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;margin-bottom:2px}
+.ac-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.ac-arrow{margin-left:auto;color:var(--gold);opacity:0;transform:translateX(-8px);transition:all .25s;position:relative;z-index:1;font-size:18px}
+
+.admin-card[data-id="hs"] .ac-icon{background:rgba(255,140,0,.14);color:#FF8C00}
+.admin-card[data-id="itau"] .ac-icon{background:rgba(255,119,0,.14);color:#FF7700}
+.admin-card[data-id="bb"] .ac-icon{background:rgba(212,175,55,.14);color:var(--gold)}
+.admin-card[data-id="santander"] .ac-icon{background:rgba(224,48,48,.14);color:#E03030}
+
+/* SCREEN 2 — Form */
+.badge{display:inline-flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:6px;padding:8px 16px;margin-bottom:32px}
+.badge-icon{font-size:15px}
+.badge-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500}
+.badge-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+
+.form-card{background:var(--navy-3);border:1px solid var(--line-s);border-radius:10px;padding:28px;margin-bottom:18px}
+.form-card.investor{border-color:var(--gold-line)}
+.fc-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.fc-title::after{content:'';flex:1;height:1px;background:var(--line-s)}
+
+.fg{display:grid;gap:16px}
+.fg-3{grid-template-columns:repeat(3,1fr)}
+.fg-2{grid-template-columns:repeat(2,1fr)}
+.fg-1{grid-template-columns:1fr}
+@media(max-width:840px){.fg-3,.fg-4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.fg-3,.fg-2{grid-template-columns:1fr}}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field.span2{grid-column:span 2}
+@media(max-width:520px){.field.span2{grid-column:span 1}}
+
+.lbl{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--bone-2);display:flex;align-items:center;gap:6px}
+.hint{font-size:11px;color:var(--muted)}
+
+.tip{width:14px;height:14px;border-radius:50%;background:var(--line-s);display:inline-flex;align-items:center;justify-content:center;font-size:9px;cursor:help;color:var(--muted);position:relative;flex-shrink:0}
+.tip::after{content:attr(data-t);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:var(--navy-2);border:1px solid var(--line-s);border-radius:6px;padding:8px 12px;font-size:11.5px;width:220px;white-space:normal;line-height:1.5;color:var(--bone);font-weight:400;z-index:300;pointer-events:none;display:none}
+.tip:hover::after{display:block}
+
+.iw{position:relative}
+.input,.sel{background:rgba(15,32,68,.55);border:1px solid var(--line-s);border-radius:6px;padding:11px 13px;color:var(--bone);font-size:14px;width:100%;outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none}
+.input:focus,.sel:focus{border-color:var(--gold-line);background:rgba(15,32,68,.9)}
+.input::placeholder{color:var(--muted-2)}
+.pfx{position:absolute;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none;font-family:'JetBrains Mono',monospace}
+.pfx-l{left:13px}.pfx-r{right:13px}
+.input.pl{padding-left:38px}
+.input.pr{padding-right:42px}
+
+/* Flex Slider */
+.flex-wrap{display:flex;flex-direction:column;gap:8px}
+.flex-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--gold);text-align:center;line-height:1}
+.slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:var(--line-s);border-radius:2px;outline:none;cursor:pointer}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:3px solid var(--navy);box-shadow:0 0 0 2px var(--gold-line)}
+.slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);cursor:pointer;border:3px solid var(--navy)}
+.flex-marks{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+
+/* Opt divider */
+.opt-div{display:flex;align-items:center;gap:14px;margin:6px 0}
+.opt-div span{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.opt-div::before,.opt-div::after{content:'';flex:1;height:1px;background:var(--line-s)}
+
+/* Buttons */
+.btn-p{background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:14px 34px;font-weight:700;font-size:14px;letter-spacing:.5px;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:10px}
+.btn-p:hover{background:var(--bone-2);transform:translateY(-1px);box-shadow:0 8px 28px rgba(212,175,55,.28)}
+.btn-s{background:transparent;color:var(--muted);border:1px solid var(--line-s);border-radius:7px;padding:14px 24px;font-size:13px;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.btn-s:hover{color:var(--bone);border-color:var(--muted)}
+.btn-sm{background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:10px 22px;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-sm:hover{background:var(--bone-2)}
+.form-actions{display:flex;gap:12px;align-items:center;margin-top:28px;flex-wrap:wrap}
+
+/* SCREEN 3 — Results */
+.res-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.res-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.res-meta strong{color:var(--gold);font-weight:500}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+@media(max-width:860px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:440px){.kpi-grid{grid-template-columns:1fr}}
+
+.kpi{background:var(--navy-3);border:1px solid var(--line-s);border-radius:8px;padding:20px 22px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.c-gold::before{background:var(--gold)}
+.kpi.c-moss::before{background:var(--moss)}
+.kpi.c-blue::before{background:#5B8FD6}
+.kpi.c-bone::before{background:rgba(245,243,238,.5)}
+.kpi-ico{position:absolute;top:16px;right:18px;font-size:22px;opacity:.25}
+.kpi-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;line-height:1.1;color:var(--bone)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* Benefits */
+.benefits{background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:8px;padding:18px 24px;margin-bottom:24px;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+.beni{display:flex;align-items:flex-start;gap:10px;font-size:13px;min-width:160px}
+.beni-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.beni strong{display:block;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.beni span{color:var(--muted);font-size:11px;line-height:1.4}
+
+/* Chart */
+.chart-wrap{background:var(--navy-3);border:1px solid var(--line-s);border-radius:8px;padding:20px 24px;margin-bottom:24px}
+.chart-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.chart-legend{display:flex;gap:16px;margin-left:auto}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.leg-dot{width:10px;height:3px;border-radius:2px}
+canvas{width:100%;height:180px;display:block}
+
+/* Tabs */
+.tabs{display:flex;border-bottom:1px solid var(--line-s);margin-bottom:24px}
+.tab-btn{background:none;border:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);padding:13px 22px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+.tab-btn:hover{color:var(--bone)}
+.tab-btn.active{color:var(--bone);border-bottom-color:var(--gold)}
+
+/* Investor inputs inline */
+.inv-inputs{background:var(--navy-3);border:1px solid var(--gold-line);border-radius:8px;padding:22px;margin-bottom:22px}
+.inv-inputs-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+
+/* Insight cards */
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:660px){.insight-grid{grid-template-columns:1fr}}
+.insight{background:var(--navy-3);border:1px solid var(--line-s);border-radius:8px;padding:18px 20px}
+.ins-ico{font-size:20px;margin-bottom:8px}
+.ins-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ins-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--bone)}
+.ins-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* Table */
+.tbl-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.tbl-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.fbtn{background:none;border:1px solid var(--line-s);border-radius:4px;padding:5px 12px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s}
+.fbtn.on,.fbtn:hover{border-color:var(--gold-line);color:var(--gold);background:var(--gold-soft)}
+.print-btn{background:none;border:1px solid var(--line-s);border-radius:6px;padding:8px 16px;color:var(--muted);font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:7px;transition:all .2s}
+.print-btn:hover{color:var(--bone);border-color:var(--muted)}
+
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--line-s)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead{position:sticky;top:56px;z-index:10}
+th{background:var(--navy-2);padding:11px 14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:400;white-space:nowrap;border-bottom:1px solid var(--line-s)}
+th:first-child{text-align:left}
+td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line);color:var(--bone-2);font-family:'JetBrains Mono',monospace;font-size:12px}
+td:first-child{text-align:left;color:var(--muted);font-size:11px}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:rgba(15,30,60,.2)}
+tr:hover td{background:var(--gold-soft)}
+tr.yr td{background:var(--navy-2);color:var(--gold);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-bottom:1px solid var(--gold-line)}
+.pos{color:var(--moss)}
+.neg{color:var(--danger)}
+.gld{color:var(--gold)}
+.mut{color:var(--muted)}
+td small{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+
+@media print{
+  .nav,.back-btn,.form-actions,.fbtn,.print-btn,.inv-inputs{display:none!important}
+  body{background:#fff;color:#000}
+  .kpi,.tbl-wrap,.chart-wrap{border-color:#ddd}
+  th,td{color:#000!important}
+  .gld,.pos{color:#000!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-logo" onclick="goScreen(1)">
+      <svg width="154" height="28" viewBox="0 0 320 80">
+        <defs>
+          <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#C9A84C"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#gl)" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M14 58 L34 24 L54 58"/><path d="M24 58 L34 40 L44 58"/>
+        </g>
+        <text x="66" y="42" font-family="Cormorant Garamond,serif" font-size="27" font-weight="300" fill="#F5F3EE">Ramos</text>
+        <text x="66" y="60" font-family="Plus Jakarta Sans,sans-serif" font-size="10" font-weight="600" fill="#D4AF37" letter-spacing="4">CAPITAL</text>
+      </svg>
+    </button>
+    <div class="nav-div"></div>
+    <span class="nav-title">Simulador de Consórcio</span>
+    <div class="nav-steps">
+      <div class="sdot active" id="d1"></div>
+      <div class="sdot" id="d2"></div>
+      <div class="sdot" id="d3"></div>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ═══════════════════════════════════
+     TELA 1 — Selecionar Administradora
+═══════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div style="max-width:600px;margin-bottom:40px">
+    <div class="eyebrow">Simulador de Consórcio</div>
+    <h1 class="display h1" style="margin-bottom:12px">Escolha a<br>Administradora</h1>
+    <p class="sub">Selecione a administradora do consórcio do seu cliente para iniciar a simulação personalizada.</p>
+  </div>
+  <div class="admin-grid">
+    <div class="admin-card" data-id="hs" onclick="selectAdmin('hs')">
+      <div class="ac-icon">🏛️</div>
+      <div class="ac-info">
+        <div class="ac-name">HS Consórcio</div>
+        <div class="ac-tag">Administradora</div>
+      </div>
+      <div class="ac-arrow">→</div>
+    </div>
+    <div class="admin-card" data-id="itau" onclick="selectAdmin('itau')">
+      <div class="ac-icon">🔶</div>
+      <div class="ac-info">
+        <div class="ac-name">Itaú Consórcio</div>
+        <div class="ac-tag">Administradora</div>
+      </div>
+      <div class="ac-arrow">→</div>
+    </div>
+    <div class="admin-card" data-id="bb" onclick="selectAdmin('bb')">
+      <div class="ac-icon">🌐</div>
+      <div class="ac-info">
+        <div class="ac-name">Banco do Brasil</div>
+        <div class="ac-tag">Consórcios BB</div>
+      </div>
+      <div class="ac-arrow">→</div>
+    </div>
+    <div class="admin-card" data-id="santander" onclick="selectAdmin('santander')">
+      <div class="ac-icon">🔴</div>
+      <div class="ac-info">
+        <div class="ac-name">Santander</div>
+        <div class="ac-tag">Consórcio</div>
+      </div>
+      <div class="ac-arrow">→</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TELA 2 — Formulário
+═══════════════════════════════════ -->
+<div class="screen" id="s2">
+  <button class="back-btn" onclick="goScreen(1)">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9 3L4 7.5L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Voltar
+  </button>
+
+  <div class="badge">
+    <span class="badge-icon" id="bIcon">🏛️</span>
+    <div>
+      <div class="badge-name" id="bName">HS Consórcio</div>
+      <div class="badge-label">Selecionado</div>
+    </div>
+  </div>
+
+  <div class="eyebrow">Dados da Simulação</div>
+  <h2 class="display h2" style="margin-bottom:28px">Preencha os dados<br>do cliente</h2>
+
+  <!-- Cliente -->
+  <div class="form-card">
+    <div class="fc-title">Dados do Cliente</div>
+    <div class="fg fg-1">
+      <div class="field">
+        <label class="lbl" for="f_nome">Nome do Cliente <span class="tip" data-t="Nome completo do cliente para identificação no relatório">?</span></label>
+        <input class="input" type="text" id="f_nome" placeholder="Ex: João da Silva"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consórcio -->
+  <div class="form-card">
+    <div class="fc-title">Dados do Consórcio</div>
+    <div class="fg fg-3" style="margin-bottom:18px">
+      <div class="field">
+        <label class="lbl" for="f_credito">Crédito Contratado <span class="tip" data-t="Valor total do crédito contratado no consórcio">?</span></label>
+        <div class="iw"><span class="pfx pfx-l">R$</span><input class="input pl" type="number" id="f_credito" placeholder="500000" step="1000" min="10000"/></div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_incc">INCC / IPCA Anual <span class="tip" data-t="Taxa de correção monetária anual prevista no contrato. Utilize o índice contratual.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_incc" placeholder="6.28" step="0.01" min="0"/><span class="pfx pfx-r">% a.a.</span></div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_prazo">Prazo de Contratação <span class="tip" data-t="Número total de meses do plano de consórcio">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_prazo" placeholder="240" step="12" min="12" max="360"/><span class="pfx pfx-r">meses</span></div>
+      </div>
+    </div>
+    <div class="fg fg-2" style="margin-bottom:24px">
+      <div class="field">
+        <label class="lbl" for="f_taxa">Taxa Total do Consórcio <span class="tip" data-t="Percentual total de taxa administrativa cobrada sobre o crédito ao longo de todo o plano">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_taxa" placeholder="23.0" step="0.1" min="0"/><span class="pfx pfx-r">%</span></div>
+      </div>
+      <div class="field span2">
+        <label class="lbl" for="f_flex">Parcela Flex <span class="tip" data-t="Percentual da parcela normal que o cliente paga por mês. 100% = parcela cheia. Valores menores reduzem o pagamento mensal.">?</span></label>
+        <div class="flex-wrap">
+          <div class="flex-val" id="flexVal">70%</div>
+          <input class="slider" type="range" id="f_flex" min="10" max="100" step="5" value="70" oninput="setFlex(this.value)"/>
+          <div class="flex-marks"><span>10% — Mínimo</span><span>Parcela reduzida</span><span>100% — Cheio</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt-div"><span>Dados Opcionais</span></div>
+
+    <div class="fg fg-3" style="margin-top:18px">
+      <div class="field">
+        <label class="lbl" for="f_seguro">Seguro Mensal <span class="tip" data-t="Valor fixo de seguro mensal cobrado pelo consórcio. Deixe em branco se não houver.">?</span></label>
+        <div class="iw"><span class="pfx pfx-l">R$</span><input class="input pl" type="number" id="f_seguro" placeholder="Sem seguro" step="1" min="0"/></div>
+        <div class="hint">Deixe em branco se não houver</div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_lemb">Lance Embutido <span class="tip" data-t="Percentual do crédito usado como lance, descontado do próprio crédito disponível. Aumenta chance de contemplação.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_lemb" placeholder="Sem lance" step="1" min="0" max="40"/><span class="pfx pfx-r">%</span></div>
+        <div class="hint">% do crédito (geralmente até 40%)</div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_lrec">Lance Recursos Próprios <span class="tip" data-t="Percentual adicional em recursos próprios para complementar o lance. Soma-se ao lance embutido.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_lrec" placeholder="Sem lance" step="1" min="0" max="100"/><span class="pfx pfx-r">%</span></div>
+        <div class="hint">% do crédito contratado</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investidor -->
+  <div class="form-card investor">
+    <div class="fc-title" style="color:var(--gold)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Estratégia para Investidor
+      <span style="background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:3px;padding:2px 7px;font-size:9px;letter-spacing:1.5px;color:var(--gold)">OPCIONAL</span>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.65">
+      Preencha para visualizar a estratégia de venda da carta, alavancagem e renda passiva na aba de resultados.
+    </p>
+    <div class="fg fg-3">
+      <div class="field">
+        <label class="lbl" for="f_venda">Desconto de Venda <span class="tip" data-t="Desconto em relação ao crédito atualizado para vender a carta no mercado. Ex: 20% → carta vendida por 80% do crédito.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_venda" placeholder="Ex: 20" step="0.5" min="0" max="50"/><span class="pfx pfx-r">%</span></div>
+        <div class="hint">Carta vendida por (100 − X)% do crédito</div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_alug">Taxa de Aluguel Mensal <span class="tip" data-t="Percentual do crédito recebido como aluguel mensal do imóvel adquirido com a carta contemplada.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_alug" placeholder="Ex: 0.50" step="0.05" min="0" max="5"/><span class="pfx pfx-r">% a.m.</span></div>
+        <div class="hint">% do crédito atualizado por mês</div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="f_rent">Rentabilidade Anual <span class="tip" data-t="Taxa de rentabilidade anual esperada do investimento imobiliário com o crédito do consórcio.">?</span></label>
+        <div class="iw"><input class="input pr" type="number" id="f_rent" placeholder="Ex: 12" step="0.5" min="0" max="100"/><span class="pfx pfx-r">% a.a.</span></div>
+        <div class="hint">Valorização anual esperada do imóvel</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button class="btn-p" onclick="simular()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Simular Consórcio
+    </button>
+    <button class="btn-s" onclick="limpar()">Limpar campos</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     TELA 3 — Resultados
+═══════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="res-header">
+    <div>
+      <button class="back-btn" onclick="goScreen(2)" style="margin-bottom:8px">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9 3L4 7.5L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Editar Simulação
+      </button>
+      <div id="rTitle" class="display h2" style="margin-bottom:4px"></div>
+      <div id="rMeta" class="res-meta"></div>
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+      Imprimir / PDF
+    </button>
+  </div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="benefits" id="benefits"></div>
+
+  <!-- Mini chart -->
+  <div class="chart-wrap">
+    <div class="chart-title">
+      Evolução do Crédito vs. Total Pago
+      <div class="chart-legend">
+        <span class="leg-item"><span class="leg-dot" style="background:var(--gold)"></span> Crédito Atualizado</span>
+        <span class="leg-item"><span class="leg-dot" style="background:var(--moss)"></span> Total Pago</span>
+      </div>
+    </div>
+    <canvas id="chartEl"></canvas>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('fluxo',this)">📊 Fluxo Mensal</button>
+    <button class="tab-btn" onclick="switchTab('inv',this)">📈 Estratégia para Investidor</button>
+  </div>
+
+  <!-- Fluxo tab -->
+  <div id="tabFluxo">
+    <div class="tbl-bar">
+      <span class="tbl-label">Exibir:</span>
+      <button class="fbtn on" onclick="setFilter('all',this)">Todos os meses</button>
+      <button class="fbtn" onclick="setFilter('year',this)">Por ano</button>
+      <button class="fbtn" onclick="setFilter('quarter',this)">Por trimestre</button>
+    </div>
+    <div class="tbl-wrap" id="tFluxo"></div>
+  </div>
+
+  <!-- Investidor tab -->
+  <div id="tabInv" style="display:none">
+    <div class="inv-inputs">
+      <div class="inv-inputs-title">Parâmetros da Estratégia para Investidor</div>
+      <div class="fg fg-3">
+        <div class="field">
+          <label class="lbl" for="r_venda">Desconto de Venda <span class="tip" data-t="% de desconto sobre o crédito para vender a carta">?</span></label>
+          <div class="iw"><input class="input pr" type="number" id="r_venda" placeholder="20" step="0.5" min="0" max="50"/><span class="pfx pfx-r">%</span></div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="r_alug">Aluguel Mensal <span class="tip" data-t="% do crédito como renda de aluguel mensal">?</span></label>
+          <div class="iw"><input class="input pr" type="number" id="r_alug" placeholder="0.50" step="0.05" min="0" max="5"/><span class="pfx pfx-r">% a.m.</span></div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="r_rent">Rentabilidade Anual <span class="tip" data-t="Taxa de rentabilidade anual esperada do imóvel">?</span></label>
+          <div class="iw"><input class="input pr" type="number" id="r_rent" placeholder="12" step="0.5" min="0" max="100"/><span class="pfx pfx-r">% a.a.</span></div>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn-sm" onclick="calcInv()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Calcular Estratégia
+        </button>
+      </div>
+    </div>
+    <div id="insightGrid" class="insight-grid" style="display:none"></div>
+    <div class="tbl-bar" id="invTblBar" style="display:none">
+      <span class="tbl-label">Exibir:</span>
+      <button class="fbtn on" onclick="setFilterInv('all',this)">Todos os meses</button>
+      <button class="fbtn" onclick="setFilterInv('year',this)">Por ano</button>
+      <button class="fbtn" onclick="setFilterInv('quarter',this)">Por trimestre</button>
+    </div>
+    <div class="tbl-wrap" id="tInv" style="display:none"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════════
+const ADMINS = {
+  hs:       {name:'HS Consórcio', icon:'🏛️'},
+  itau:     {name:'Itaú Consórcio', icon:'🔶'},
+  bb:       {name:'Banco do Brasil Consórcios', icon:'🌐'},
+  santander:{name:'Santander Consórcio', icon:'🔴'}
+}
+
+let ST = {
+  admin: 'hs',
+  rows: [],
+  invRows: [],
+  form: {},
+  filter: 'all',
+  filterInv: 'all'
+}
+
+// ══════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════
+function goScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+  document.getElementById('s'+n).classList.add('active')
+  ;[1,2,3].forEach(i => {
+    const d = document.getElementById('d'+i)
+    d.className = 'sdot'
+    if(i < n) d.classList.add('done')
+    if(i === n) d.classList.add('active')
+  })
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+function selectAdmin(id) {
+  ST.admin = id
+  const a = ADMINS[id]
+  document.getElementById('bIcon').textContent = a.icon
+  document.getElementById('bName').textContent = a.name
+  goScreen(2)
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  document.getElementById('tabFluxo').style.display = tab === 'fluxo' ? 'block' : 'none'
+  document.getElementById('tabInv').style.display   = tab === 'inv'   ? 'block' : 'none'
+}
+
+// ══════════════════════════════════════════════════
+//  FORM HELPERS
+// ══════════════════════════════════════════════════
+function setFlex(v) { document.getElementById('flexVal').textContent = v + '%' }
+
+function limpar() {
+  ['f_nome','f_credito','f_incc','f_prazo','f_taxa','f_seguro',
+   'f_lemb','f_lrec','f_venda','f_alug','f_rent'].forEach(id => {
+    const el = document.getElementById(id)
+    if(el) el.value = ''
+  })
+  document.getElementById('f_flex').value = 70
+  setFlex(70)
+}
+
+function gv(id, def=0) {
+  const v = parseFloat(document.getElementById(id)?.value)
+  return isNaN(v) ? def : v
+}
+function gs(id) { return (document.getElementById(id)?.value||'').trim() }
+
+// ══════════════════════════════════════════════════
+//  FORMATTING
+// ══════════════════════════════════════════════════
+const BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2})
+const fmt = v => BRL.format(v)
+const fmtS = v => {
+  const a = Math.abs(v)
+  if(a>=1e6) return (v/1e6).toFixed(2).replace('.',',') + ' Mi'
+  if(a>=1e3) return (v/1e3).toFixed(1).replace('.',',') + ' K'
+  return v.toFixed(2).replace('.',',')
+}
+
+// ══════════════════════════════════════════════════
+//  CALCULATION CORE
+// ══════════════════════════════════════════════════
+function calcRows(f) {
+  const rMes = Math.pow(1 + f.incc/100, 1/12) - 1
+  let acum = 0
+  const rows = []
+  for(let m=1; m<=f.prazo; m++){
+    const cred = f.credito * Math.pow(1+rMes, m)
+    // parcela = fundo_comum + taxa_adm + seguro, com flex
+    const parcelaNorm = cred * (1/f.prazo + f.taxa/100/f.prazo) + f.seguro
+    const parcela = parcelaNorm * f.flex/100
+    acum += parcela
+    rows.push({ mes:m, parcela, acum, cred, corr: cred - f.credito })
+  }
+  return rows
+}
+
+// ══════════════════════════════════════════════════
+//  SIMULATE
+// ══════════════════════════════════════════════════
+function simular() {
+  const f = {
+    nome:   gs('f_nome') || 'Cliente',
+    credito: gv('f_credito'),
+    incc:   gv('f_incc'),
+    prazo:  Math.round(gv('f_prazo')),
+    taxa:   gv('f_taxa'),
+    flex:   gv('f_flex',70),
+    seguro: gv('f_seguro',0),
+    lemb:   gv('f_lemb',0),
+    lrec:   gv('f_lrec',0),
+    venda:  gv('f_venda',0),
+    alug:   gv('f_alug',0),
+    rent:   gv('f_rent',0)
+  }
+
+  if(!f.credito || f.credito <= 0) { alert('Informe o Crédito Contratado.'); return }
+  if(!f.prazo || f.prazo < 12)      { alert('Informe o Prazo (mínimo 12 meses).'); return }
+  if(!f.taxa || f.taxa <= 0)         { alert('Informe a Taxa Total do Consórcio.'); return }
+
+  ST.form = f
+  ST.rows = calcRows(f)
+  ST.invRows = []
+
+  renderResults()
+  goScreen(3)
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER RESULTS
+// ══════════════════════════════════════════════════
+function renderResults() {
+  const f = ST.form, rows = ST.rows, last = rows[rows.length-1]
+  const admin = ADMINS[ST.admin]
+
+  // Header
+  document.getElementById('rTitle').textContent = f.nome
+  document.getElementById('rMeta').innerHTML =
+    `<strong>${admin.icon} ${admin.name}</strong> &nbsp;·&nbsp; Crédito: <strong>${fmt(f.credito)}</strong> &nbsp;·&nbsp; <strong>${f.prazo} meses</strong> &nbsp;·&nbsp; Taxa: <strong>${f.taxa}%</strong> &nbsp;·&nbsp; Flex: <strong>${f.flex}%</strong>${f.incc>0?' &nbsp;·&nbsp; Correção: <strong>'+f.incc+'% a.a.</strong>':''}`
+
+  // KPIs
+  const p0 = rows[0].parcela
+  const lanceTotal = f.credito * (f.lemb + f.lrec) / 100
+  const ganho = last.cred - last.acum
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi c-gold">
+      <div class="kpi-ico">💳</div>
+      <div class="kpi-lbl">Parcela Inicial</div>
+      <div class="kpi-val">${fmt(p0)}</div>
+      <div class="kpi-sub">Flex ${f.flex}% · Mês 1</div>
+    </div>
+    <div class="kpi c-moss">
+      <div class="kpi-ico">💰</div>
+      <div class="kpi-lbl">Total Pago (${f.prazo} meses)</div>
+      <div class="kpi-val">${fmt(last.acum)}</div>
+      <div class="kpi-sub">Soma das ${f.prazo} parcelas corrigidas</div>
+    </div>
+    <div class="kpi c-blue">
+      <div class="kpi-ico">📈</div>
+      <div class="kpi-lbl">Crédito no Final</div>
+      <div class="kpi-val">${fmt(last.cred)}</div>
+      <div class="kpi-sub">Após ${f.prazo} meses · ${f.incc}% a.a. INCC/IPCA</div>
+    </div>
+    <div class="kpi c-bone">
+      <div class="kpi-ico">✨</div>
+      <div class="kpi-lbl">Ganho c/ Correção</div>
+      <div class="kpi-val">${fmt(last.cred - f.credito)}</div>
+      <div class="kpi-sub">Crédito cresce acima do total pago</div>
+    </div>`
+
+  // Benefits
+  const posGanho = ganho >= 0
+  document.getElementById('benefits').innerHTML = `
+    <div class="beni">
+      <div class="beni-ico">🏆</div>
+      <div>
+        <strong>Vender a carta vale a pena?</strong>
+        <span>Crédito final ${posGanho?'supera':'abaixo do'} total pago em <strong>${fmt(Math.abs(ganho))}</strong></span>
+      </div>
+    </div>
+    <div class="beni">
+      <div class="beni-ico">⚡</div>
+      <div>
+        <strong>Liquidez imediata</strong>
+        <span>Transforme a cota em dinheiro antes do fim do prazo sem esperar contemplação</span>
+      </div>
+    </div>
+    <div class="beni">
+      <div class="beni-ico">🛡️</div>
+      <div>
+        <strong>Proteção contra inflação</strong>
+        <span>Crédito corrigido por ${f.incc}% a.a. preserva o poder de compra do patrimônio</span>
+      </div>
+    </div>
+    ${lanceTotal>0?`
+    <div class="beni">
+      <div class="beni-ico">🎯</div>
+      <div>
+        <strong>Lance total: ${fmt(lanceTotal)}</strong>
+        <span>${f.lemb>0?'Embutido '+f.lemb+'%':''}${f.lemb>0&&f.lrec>0?' + ':''}${f.lrec>0?'Próprio '+f.lrec+'%':''} do crédito</span>
+      </div>
+    </div>`:''}
+  `
+
+  // Chart
+  setTimeout(() => drawChart(rows), 50)
+
+  // Pre-fill investor fields
+  if(f.venda) document.getElementById('r_venda').value = f.venda
+  if(f.alug)  document.getElementById('r_alug').value  = f.alug
+  if(f.rent)  document.getElementById('r_rent').value  = f.rent
+
+  renderFluxo()
+
+  if(f.venda>0 || f.alug>0) calcInv()
+}
+
+// ══════════════════════════════════════════════════
+//  CHART
+// ══════════════════════════════════════════════════
+function drawChart(rows) {
+  const canvas = document.getElementById('chartEl')
+  if(!canvas) return
+  const dpr = window.devicePixelRatio || 1
+  const W = canvas.parentElement.clientWidth - 48
+  const H = 180
+  canvas.style.width = W+'px'
+  canvas.style.height = H+'px'
+  canvas.width = W * dpr
+  canvas.height = H * dpr
+  const ctx = canvas.getContext('2d')
+  ctx.scale(dpr, dpr)
+
+  const pad = {t:10,r:10,b:10,l:10}
+  const cW = W - pad.l - pad.r
+  const cH = H - pad.t - pad.b
+
+  const maxV = Math.max(...rows.map(r => r.cred), ...rows.map(r => r.acum))
+  const scX = i => pad.l + (i/(rows.length-1)) * cW
+  const scY = v => pad.t + cH - (v/maxV)*cH
+
+  // Fill area between credit and paid
+  ctx.beginPath()
+  rows.forEach((r,i) => i===0 ? ctx.moveTo(scX(i),scY(r.cred)) : ctx.lineTo(scX(i),scY(r.cred)))
+  rows.slice().reverse().forEach((r,i,a) => ctx.lineTo(scX(a.length-1-i),scY(r.acum)))
+  ctx.closePath()
+  const grad = ctx.createLinearGradient(0,0,0,H)
+  grad.addColorStop(0,'rgba(212,175,55,0.08)')
+  grad.addColorStop(1,'rgba(64,145,108,0.06)')
+  ctx.fillStyle = grad
+  ctx.fill()
+
+  // Credit line (gold)
+  ctx.beginPath()
+  ctx.strokeStyle = '#D4AF37'
+  ctx.lineWidth = 2
+  rows.forEach((r,i) => i===0 ? ctx.moveTo(scX(i),scY(r.cred)) : ctx.lineTo(scX(i),scY(r.cred)))
+  ctx.stroke()
+
+  // Paid line (moss)
+  ctx.beginPath()
+  ctx.strokeStyle = '#40916C'
+  ctx.lineWidth = 2
+  rows.forEach((r,i) => i===0 ? ctx.moveTo(scX(i),scY(r.acum)) : ctx.lineTo(scX(i),scY(r.acum)))
+  ctx.stroke()
+
+  // Year marks on x-axis
+  ctx.fillStyle = 'rgba(138,155,181,0.4)'
+  for(let m=12; m<=rows.length; m+=12) {
+    const x = scX(m-1)
+    ctx.fillRect(x,H-pad.b-4,1,4)
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  FLUXO TABLE
+// ══════════════════════════════════════════════════
+function setFilter(f, btn) {
+  ST.filter = f
+  document.querySelectorAll('#tabFluxo .fbtn').forEach(b => b.classList.remove('on'))
+  btn.classList.add('on')
+  renderFluxo()
+}
+
+function filterRows(rows, filt) {
+  if(filt==='all') return rows
+  const step = filt==='year' ? 12 : 3
+  return rows.filter((r,i) => r.mes%step===0 || i===0 || i===rows.length-1)
+}
+
+function renderFluxo() {
+  const rows = filterRows(ST.rows, ST.filter)
+  let prev = 0, html = `
+    <table>
+      <thead><tr>
+        <th>Mês</th><th>Parcela</th><th>Total Pago Acum.</th>
+        <th>Crédito Atualizado</th><th>Correção Acum.</th>
+      </tr></thead><tbody>`
+
+  rows.forEach(r => {
+    const yr = Math.ceil(r.mes/12)
+    if(yr!==prev){ html+=`<tr class="yr"><td colspan="5">Ano ${yr}</td></tr>`; prev=yr }
+    html += `<tr>
+      <td>${r.mes}</td>
+      <td>${fmt(r.parcela)}</td>
+      <td>${fmt(r.acum)}</td>
+      <td class="gld">${fmt(r.cred)}</td>
+      <td class="${r.corr>=0?'pos':'neg'}">${r.corr>=0?'+':''}${fmt(r.corr)}</td>
+    </tr>`
+  })
+  html += '</tbody></table>'
+  document.getElementById('tFluxo').innerHTML = html
+}
+
+// ══════════════════════════════════════════════════
+//  INVESTOR STRATEGY
+// ══════════════════════════════════════════════════
+function setFilterInv(f, btn) {
+  ST.filterInv = f
+  document.querySelectorAll('#invTblBar .fbtn').forEach(b => b.classList.remove('on'))
+  btn.classList.add('on')
+  renderInvTable(ST.invRows)
+}
+
+function calcInv() {
+  const vendaPct  = parseFloat(document.getElementById('r_venda').value) || 0
+  const alugMensal = parseFloat(document.getElementById('r_alug').value)  || 0
+  const rentAnual  = parseFloat(document.getElementById('r_rent').value)  || 0
+
+  const invRows = ST.rows.map(r => {
+    const valorVenda  = r.cred * (1 - vendaPct/100)
+    const lucroVenda  = valorVenda - r.acum
+    const alavancagem = r.cred - r.acum
+    const rendaMensal = r.cred * alugMensal/100
+    const rendaAnual  = rendaMensal * 12
+    return {...r, valorVenda, lucroVenda, alavancagem, rendaMensal, rendaAnual}
+  })
+  ST.invRows = invRows
+
+  // Find best sell month
+  const primLucro = invRows.find(r => r.lucroVenda > 0)
+  const melhorLucro = invRows.reduce((best,r) => r.lucroVenda > (best?.lucroVenda||0) ? r : best, null)
+  const maxAlav = invRows.reduce((best,r) => r.alavancagem > (best?.alavancagem||0) ? r : best, null)
+  const lastRow = invRows[invRows.length-1]
+
+  document.getElementById('insightGrid').style.display = 'grid'
+  document.getElementById('insightGrid').innerHTML = `
+    <div class="insight">
+      <div class="ins-ico">💸</div>
+      <div class="ins-lbl">Melhor Venda da Carta</div>
+      <div class="ins-val">${melhorLucro && melhorLucro.lucroVenda>0 ? 'Mês '+melhorLucro.mes : 'Avaliar desconto'}</div>
+      <div class="ins-sub">${melhorLucro && melhorLucro.lucroVenda>0 ? 'Lucro de '+fmt(melhorLucro.lucroVenda) : 'Desconto muito alto'}</div>
+    </div>
+    <div class="insight">
+      <div class="ins-ico">🏠</div>
+      <div class="ins-lbl">Renda Passiva Mensal</div>
+      <div class="ins-val">${fmt(lastRow.rendaMensal)}</div>
+      <div class="ins-sub">No final do plano · Aluguel de ${alugMensal}% a.m. sobre ${fmt(lastRow.cred)}</div>
+    </div>
+    <div class="insight">
+      <div class="ins-ico">🚀</div>
+      <div class="ins-lbl">Potencial de Alavancagem</div>
+      <div class="ins-val">${fmt(maxAlav?.alavancagem||0)}</div>
+      <div class="ins-sub">Crédito − Total Pago no mês ${maxAlav?.mes||'—'}</div>
+    </div>`
+
+  document.getElementById('invTblBar').style.display = 'flex'
+  renderInvTable(invRows)
+}
+
+function renderInvTable(invRows) {
+  const rows = filterRows(invRows, ST.filterInv)
+  let prev = 0, html = `
+    <table>
+      <thead><tr>
+        <th>Mês</th><th>Parcela</th><th>Total Pago Acum.</th>
+        <th>Crédito Atualizado</th><th>Valor para Venda</th>
+        <th>Para Alavancagem</th><th>Para Renda Passiva</th>
+      </tr></thead><tbody>`
+
+  rows.forEach(r => {
+    const yr = Math.ceil(r.mes/12)
+    if(yr!==prev){ html+=`<tr class="yr"><td colspan="7">Ano ${yr}</td></tr>`; prev=yr }
+    const lc = r.lucroVenda>=0 ? 'pos' : 'neg'
+    const ac = r.alavancagem>=0 ? 'gld' : 'neg'
+    html += `<tr>
+      <td>${r.mes}</td>
+      <td>${fmt(r.parcela)}</td>
+      <td>${fmt(r.acum)}</td>
+      <td class="gld">${fmt(r.cred)}</td>
+      <td class="${lc}">${fmt(r.valorVenda)}<small>${r.lucroVenda>=0?'+':''}${fmt(r.lucroVenda)} lucro</small></td>
+      <td class="${ac}">${fmt(r.alavancagem)}</td>
+      <td class="pos">${fmt(r.rendaMensal)}<small>${fmt(r.rendaAnual)}/ano</small></td>
+    </tr>`
+  })
+  html += '</tbody></table>'
+  const el = document.getElementById('tInv')
+  el.innerHTML = html
+  el.style.display = 'block'
+}
+</script>
+</body>
+</html>
