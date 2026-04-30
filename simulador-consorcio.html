@@ -700,9 +700,9 @@ td small{display:block;font-size:11px;color:var(--muted);margin-top:2px;font-wei
     </p>
     <div class="fg fg3">
       <div class="f">
-        <label class="lbl" for="f_venda">Desconto de Venda <span class="tip" data-t="Desconto sobre o crédito para vender a carta. Ex: 20% → carta vendida por 80% do crédito.">?</span></label>
-        <div class="iw"><input class="inp pr" type="number" id="f_venda" placeholder="Ex: 20" step="0.5" min="0" max="50"/><span class="pfx pl-r">%</span></div>
-        <div class="hint">Carta vendida por (100−X)% do crédito</div>
+        <label class="lbl" for="f_venda">% de Compra da Carta <span class="tip" data-t="Percentual do crédito atualizado que o investidor paga ao consorciado para adquirir a carta. Ex: 20% → carta de R$100k → investidor paga R$20k ao cliente.">?</span></label>
+        <div class="iw"><input class="inp pr" type="number" id="f_venda" placeholder="Ex: 20" step="0.5" min="0" max="100"/><span class="pfx pl-r">%</span></div>
+        <div class="hint">Investidor paga X% do crédito ao consorciado</div>
       </div>
       <div class="f">
         <label class="lbl" for="f_alug">Aluguel Mensal <span class="tip" data-t="% do crédito recebido como aluguel mensal do imóvel adquirido">?</span></label>
@@ -783,7 +783,7 @@ td small{display:block;font-size:11px;color:var(--muted);margin-top:2px;font-wei
       <div class="inv-title">Parâmetros da Estratégia para Investidor</div>
       <div class="fg fg3">
         <div class="f">
-          <label class="lbl" for="r_venda">Desconto de Venda <span class="tip" data-t="% de desconto sobre o crédito para vender a carta">?</span></label>
+          <label class="lbl" for="r_venda">% de Compra da Carta <span class="tip" data-t="% do crédito que o investidor paga ao consorciado. Ex: 20% → carta de R$100k → cliente recebe R$20k.">?</span></label>
           <div class="iw"><input class="inp pr" type="number" id="r_venda" placeholder="20" step="0.5" min="0" max="50"/><span class="pfx pl-r">%</span></div>
         </div>
         <div class="f">
@@ -1185,11 +1185,14 @@ function calcInv() {
   const rentAnual  = parseFloat(document.getElementById('r_rent').value)  || 0
 
   const invRows = ST.rows.map(r => {
-    const valorVenda  = r.cred * (1 - vendaPct/100)
-    const lucroVenda  = valorVenda - r.acum
-    const alavancagem = r.cred - r.acum
-    const rendaMensal = r.cred * alugMensal/100
-    const rendaAnual  = rendaMensal * 12
+    // valorVenda = o que o CLIENTE recebe = investidor paga X% do crédito
+    const valorVenda   = r.cred * vendaPct/100
+    // lucroCliente = cliente recebeu X, pagou Y em parcelas → resultado da venda
+    const lucroVenda   = valorVenda - r.acum
+    // alavancagem do investidor = crédito que ele recebe - o que pagou
+    const alavancagem  = r.cred - valorVenda
+    const rendaMensal  = r.cred * alugMensal/100
+    const rendaAnual   = rendaMensal * 12
     return {...r, valorVenda, lucroVenda, alavancagem, rendaMensal, rendaAnual}
   })
   ST.invRows = invRows
@@ -1203,8 +1206,8 @@ function calcInv() {
     <div class="insight">
       <div class="ins-ico">💸</div>
       <div class="ins-lbl">Melhor Venda da Carta</div>
-      <div class="ins-val">${melhorLucro&&melhorLucro.lucroVenda>0?'Mês '+melhorLucro.mes:'Avaliar desconto'}</div>
-      <div class="ins-sub">${melhorLucro&&melhorLucro.lucroVenda>0?'Lucro de '+fmt(melhorLucro.lucroVenda):'Desconto muito alto'}</div>
+      <div class="ins-val">${melhorLucro&&melhorLucro.lucroVenda>0?'Mês '+melhorLucro.mes:'Avaliar % de compra'}</div>
+      <div class="ins-sub">${melhorLucro&&melhorLucro.lucroVenda>0?'Recebe '+fmt(melhorLucro.valorVenda)+' — lucro de '+fmt(melhorLucro.lucroVenda):'% pago abaixo do total investido'}</div>
     </div>
     <div class="insight">
       <div class="ins-ico">🏠</div>
@@ -1216,7 +1219,7 @@ function calcInv() {
       <div class="ins-ico">🚀</div>
       <div class="ins-lbl">Potencial de Alavancagem</div>
       <div class="ins-val">${fmt(maxAlav?.alavancagem||0)}</div>
-      <div class="ins-sub">Crédito − Total Pago no mês ${maxAlav?.mes||'—'}</div>
+      <div class="ins-sub">Crédito − valor pago pela carta (mês ${maxAlav?.mes||'—'})</div>
     </div>`
 
   document.getElementById('invTblBar').style.display = 'flex'
@@ -1236,8 +1239,8 @@ function renderInvTable(invRows) {
     <table>
       <thead><tr>
         <th>Mês</th><th>Parcela</th><th>Total Pago Acum.</th>
-        <th>Crédito Atualizado</th><th>Valor para Venda</th>
-        <th>Para Alavancagem</th><th>Para Renda Passiva</th>
+        <th>Crédito Atualizado</th><th>Cliente Recebe</th>
+        <th>Ganho do Investidor</th><th>Para Renda Passiva</th>
       </tr></thead><tbody>`
   rows.forEach(r => {
     const yr = Math.ceil(r.mes/12)
@@ -1249,8 +1252,8 @@ function renderInvTable(invRows) {
       <td>${fmt(r.parcela)}</td>
       <td>${fmt(r.acum)}</td>
       <td class="gld">${fmt(r.cred)}</td>
-      <td class="${lc}">${fmt(r.valorVenda)}<small>${r.lucroVenda>=0?'+':''}${fmt(r.lucroVenda)} lucro</small></td>
-      <td class="${ac}">${fmt(r.alavancagem)}</td>
+      <td class="${lc}">${fmt(r.valorVenda)}<small>Lucro cliente: ${r.lucroVenda>=0?'+':''}${fmt(r.lucroVenda)}</small></td>
+      <td class="${ac}">${fmt(r.alavancagem)}<small>Crédito − Pago pelo investidor</small></td>
       <td class="pos">${fmt(r.rendaMensal)}<small>${fmt(r.rendaAnual)}/ano</small></td>
     </tr>`
   })
