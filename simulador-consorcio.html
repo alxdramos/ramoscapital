@@ -277,6 +277,47 @@ img,svg{display:block;max-width:100%}
   text-transform:uppercase;margin-left:8px;
 }
 
+/* Admin card rates */
+.arates{font-size:11px;color:var(--muted);margin-top:5px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
+.arates b{color:var(--navy);font-weight:600}
+
+/* Preview ao vivo da parcela */
+.prev-box{
+  background:linear-gradient(135deg,#F0F9F4 0%,#EFF6FF 100%);
+  border:1.5px solid var(--border2);
+  border-left:4px solid var(--green);
+  border-radius:var(--r);
+  padding:18px 22px;
+  margin-top:18px;
+  animation:up .25s ease;
+}
+.prev-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--green);margin-bottom:14px;display:flex;align-items:center;gap:7px;
+}
+.prev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:600px){.prev-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:380px){.prev-grid{grid-template-columns:1fr}}
+.prev-item{display:flex;flex-direction:column;gap:4px}
+.prev-item.main .prev-val{
+  font-size:24px;color:var(--navy);font-weight:700;
+}
+.prev-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.prev-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--text);line-height:1.1}
+.prev-note{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Admin info tooltip na tela 1 */
+.admin-info-bar{
+  display:flex;gap:20px;flex-wrap:wrap;
+  margin-top:28px;max-width:720px;
+  padding:14px 20px;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--r);
+  box-shadow:var(--sh1);
+}
+
 /* ════════════════════════════════════════
    TELA 3 — RESULTADOS
 ════════════════════════════════════════ */
@@ -501,6 +542,7 @@ td small{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-wei
       <div class="ain">
         <div class="aname">HS Consórcio</div>
         <div class="atag">Administradora</div>
+        <div class="arates">Taxa <b>~20%</b> · Prazo <b>200m</b> · Meia Parcela</div>
       </div>
       <div class="acarr">→</div>
     </div>
@@ -509,6 +551,7 @@ td small{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-wei
       <div class="ain">
         <div class="aname">Itaú Consórcio</div>
         <div class="atag">Administradora</div>
+        <div class="arates">Taxa <b>~18%</b> · Prazo <b>240m</b> · Plano Flex</div>
       </div>
       <div class="acarr">→</div>
     </div>
@@ -517,6 +560,7 @@ td small{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-wei
       <div class="ain">
         <div class="aname">Banco do Brasil</div>
         <div class="atag">Consórcios BB</div>
+        <div class="arates">Taxa <b>~19%</b> · Prazo <b>200m</b> · INCC</div>
       </div>
       <div class="acarr">→</div>
     </div>
@@ -525,6 +569,7 @@ td small{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-wei
       <div class="ain">
         <div class="aname">Santander</div>
         <div class="atag">Consórcio</div>
+        <div class="arates">Taxa <b>~22%</b> · Prazo <b>180m</b> · Plano Flex</div>
       </div>
       <div class="acarr">→</div>
     </div>
@@ -594,7 +639,32 @@ td small{display:block;font-size:10px;color:var(--muted);margin-top:2px;font-wei
       </div>
     </div>
 
-    <div class="opt"><span>Dados Opcionais</span></div>
+    <!-- ── PREVIEW AO VIVO ── -->
+    <div id="previewBox" class="prev-box" style="display:none">
+      <div class="prev-title">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Prévia da Parcela · Mês 1
+      </div>
+      <div class="prev-grid">
+        <div class="prev-item">
+          <div class="prev-lbl">Parcela Cheia (100%)</div>
+          <div class="prev-val" id="p100">—</div>
+          <div class="prev-note">Sem flex</div>
+        </div>
+        <div class="prev-item main">
+          <div class="prev-lbl">Com Flex <span id="prevFlexLbl" style="color:var(--green)">70%</span></div>
+          <div class="prev-val" id="pFlex" style="color:var(--navy);font-size:26px;font-weight:700">—</div>
+          <div class="prev-note" id="pEcon" style="color:var(--green)"></div>
+        </div>
+        <div class="prev-item">
+          <div class="prev-lbl">Total Estimado</div>
+          <div class="prev-val" id="pTotal">—</div>
+          <div class="prev-note" id="pPrazoLabel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt" style="margin-top:18px"><span>Dados Opcionais</span></div>
 
     <div class="fg fg3" style="margin-top:16px">
       <div class="f">
@@ -753,6 +823,14 @@ const ADMINS = {
   santander:{name:'Santander Consórcio', icon:'🔴'}
 }
 
+// Dados pesquisados — fontes: iDinheiro (abr/2026), HS Consórcios, idinheiro.com.br
+const DEFAULTS = {
+  hs:        { taxa:20,  prazo:200, incc:6.28, flex:50,  info:'Taxa ~20% · INCC 6,28% a.a. · Parcela Meia (50%)' },
+  itau:      { taxa:18,  prazo:240, incc:6.28, flex:70,  info:'Taxa ~18% · INCC 6,28% a.a. · Plano Flex disponível' },
+  bb:        { taxa:19,  prazo:200, incc:6.28, flex:70,  info:'Taxa ~19% (adm 17% + fundo 2%) · INCC 6,28% a.a.' },
+  santander: { taxa:22,  prazo:180, incc:6.28, flex:70,  info:'Taxa ~22% (adm 22% + fundo 3%) · INCC 6,28% a.a.' }
+}
+
 let ST = {
   admin: 'hs',
   rows: [],
@@ -780,8 +858,17 @@ function goScreen(n) {
 function selectAdmin(id) {
   ST.admin = id
   const a = ADMINS[id]
+  const d = DEFAULTS[id]
   document.getElementById('bIcon').textContent = a.icon
   document.getElementById('bName').textContent = a.name
+  // Pré-preenche com dados reais da administradora
+  if(d) {
+    if(!document.getElementById('f_taxa').value) document.getElementById('f_taxa').value = d.taxa
+    if(!document.getElementById('f_prazo').value) document.getElementById('f_prazo').value = d.prazo
+    if(!document.getElementById('f_incc').value)  document.getElementById('f_incc').value  = d.incc
+    document.getElementById('f_flex').value = d.flex
+    setFlex(d.flex)
+  }
   goScreen(2)
 }
 
@@ -795,7 +882,40 @@ function switchTab(tab, btn) {
 // ══════════════════════════════════════════════════
 //  FORM HELPERS
 // ══════════════════════════════════════════════════
-function setFlex(v) { document.getElementById('flexVal').textContent = v + '%' }
+function setFlex(v) {
+  document.getElementById('flexVal').textContent = v + '%'
+  updatePreview()
+}
+
+function updatePreview() {
+  const credito = gv('f_credito')
+  const incc    = gv('f_incc', 0)
+  const prazo   = Math.round(gv('f_prazo'))
+  const taxa    = gv('f_taxa')
+  const flex    = gv('f_flex', 70)
+  const seguro  = gv('f_seguro', 0)
+  const box     = document.getElementById('previewBox')
+
+  if(!credito || credito<=0 || !prazo || prazo<12 || !taxa || taxa<=0) {
+    box.style.display = 'none'; return
+  }
+
+  const rMes       = Math.pow(1 + incc/100, 1/12) - 1
+  const cred1      = credito * Math.pow(1+rMes, 1)
+  const parcNorm   = cred1 * (1/prazo + taxa/100/prazo) + seguro
+  const parcCheia  = parcNorm
+  const parcFlex   = parcNorm * flex/100
+  const economia   = parcCheia - parcFlex
+  const totalEst   = parcFlex * prazo
+
+  document.getElementById('p100').textContent       = fmt(parcCheia)
+  document.getElementById('pFlex').textContent      = fmt(parcFlex)
+  document.getElementById('prevFlexLbl').textContent = flex + '%'
+  document.getElementById('pEcon').textContent      = economia > 0 ? '−' + fmt(economia) + '/mês' : 'Parcela cheia'
+  document.getElementById('pTotal').textContent     = fmt(totalEst)
+  document.getElementById('pPrazoLabel').textContent = prazo + ' parcelas estimadas'
+  box.style.display = 'block'
+}
 
 function limpar() {
   ['f_nome','f_credito','f_incc','f_prazo','f_taxa','f_seguro',
@@ -1099,6 +1219,13 @@ function calcInv() {
   document.getElementById('invTblBar').style.display = 'flex'
   renderInvTable(invRows)
 }
+
+// Event listeners para preview ao vivo
+document.addEventListener('DOMContentLoaded', () => {
+  ['f_credito','f_incc','f_prazo','f_taxa','f_seguro'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updatePreview)
+  })
+})
 
 function renderInvTable(invRows) {
   const rows = filterRows(invRows, ST.filterInv)
